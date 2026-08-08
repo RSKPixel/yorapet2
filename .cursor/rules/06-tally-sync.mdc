@@ -1,0 +1,60 @@
+---
+description: Tally → yorapet purchase/sales sync rules
+globs: backend/app/services/tally_sync_service.py,backend/app/services/tally_sync_key.py,backend/app/api/v1/endpoints/tally_data.py
+alwaysApply: false
+---
+
+# Tally Data Sync Rules
+
+External **tallysync** fills `tallydata_*`. Yorapet sync copies purchases/sales into `yorapet_*` via `POST /api/v1/tally-data/sync`.
+
+Apply these rules **separately** for purchases and for sales.
+
+## 1. Date window
+
+- `min_date` / `max_date` = min/max `voucher_date` from the current `tallydata_purchases` or `tallydata_sales` snapshot.
+- Only `yorapet_*` rows with `voucher_date` inside that window may be added to, updated, or deleted.
+- Rows outside the window are left untouched.
+- Empty Tally snapshot → no date window → delete nothing.
+
+## 2. Match key for line identity
+
+- Each line has a content `sync_key` (SHA-256 of Tally-mapped fields). Used for storage uniqueness and optional purchase costing restore.
+- Voucher grouping for add/update/delete uses normalized `voucher_no` (case-insensitive). Blank `voucher_no` groups by `sync_key` so lines do not collide.
+
+## 3. Add
+
+When a `voucher_no` exists in tallydata and **not** in yorapet (within the window):
+
+- Insert all tallydata lines for that voucher into yorapet.
+
+## 4. Delete
+
+When a `voucher_no` exists in yorapet (within the window) and **not** in tallydata:
+
+- Delete those yorapet line(s).
+
+## 5. Update
+
+When the same `voucher_no` exists in **both** tables (yorapet side within the window):
+
+- Delete the yorapet record(s) for that voucher (in window).
+- Insert all tallydata lines for that voucher.
+- For purchases, set baseline `cost_value` / `cost_price` from amount/qty on insert.
+
+## 6. Purchase costing overlays (after sync)
+
+- `yorapet_purchase_expense` and `yorapet_purchase_credit_note` are **not** modified by Tally sync.
+- After purchase sync completes, recalculate `cost_*` for every voucher that has expense or credit-note overlays:
+  - Allocate voucher `expenses` by boxes onto each line (shown as Expenses): `line_expenses = expenses / total_boxes * line.box`.
+  - Manual `credit_note` per purchase line (also stored by `sync_key` so Tally sync can restore it).
+  - Voucher credit note total must equal the sum of line credit notes on save.
+  - `cost_value = amount + line_expenses - line.credit_note`; `cost_price = cost_value / qty`.
+  - Sync `box` and `qty_per_box` from `tallydata_purchases` onto `yorapet_purchase`.
+
+## Do not
+
+- Match sync on Tally numeric `id`.
+- Write to any `tallydata_*` table.
+- Delete or rewrite yorapet rows outside the Tally date window.
+- Wipe expense / credit-note overlay tables during sync.

@@ -1,0 +1,1 @@
+"""YoraPet FastAPI application package."""

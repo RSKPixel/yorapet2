@@ -1,0 +1,53 @@
+## Application-Owned Tables
+
+All tables owned by this application must use the prefix:
+
+yorapet_*
+
+Current application-owned tables:
+
+- `yorapet_users` — authenticated application users
+- `yorapet_company_profiles` — company profile settings
+- `yorapet_purchase` — purchase lines synced from `tallydata_purchases` (matched by `sync_key` content hash; includes `box` / `qty_per_box` from Tally; calculated `value_addition` / `cost_value` / `cost_price` for FIFO)
+- `yorapet_purchase_expense` — voucher-level `expenses` + `credit_note` total (keyed by voucher_no + voucher_date)
+- `yorapet_purchase_line_credit` — manual per-line credit notes keyed by purchase `sync_key` (survives Tally sync)
+- `yorapet_purchase_credit_note` — legacy stock-item credit notes (superseded by costing-page line credits)
+- `yorapet_sales` — sales lines synced from `tallydata_sales` (matched by `sync_key` content hash)
+- `yorapet_opening_stock` — opening stock balances for stock summary / FIFO
+- `yorapet_inventory_extra` — app-owned stock item fields (weight, neck size, qty per box, box dimension, reorder level) keyed by `stock_item` from `tallydata_inventorymaster`
+- `yorapet_inventory_image` — up to 4 images per stock item (BLOB + content type), keyed by `stock_item`
+
+Rules
+
+- Every new application-owned table must be named `yorapet_<purpose>`.
+- SQLAlchemy models using `Base` must set `__tablename__` with the `yorapet_` prefix.
+- Never create application-owned tables without the `yorapet_` prefix.
+- Never rename `yorapet_*` tables to unprefixed names.
+- Include all `yorapet_*` tables in Alembic migrations.
+- Application features requiring additional data must use separate `yorapet_*` tables that reference legacy tables when appropriate.
+
+---
+
+## Legacy Tally Tables
+
+The database contains legacy tables prefixed with:
+
+tallydata_*
+
+These tables are maintained externally and are not owned by this application.
+
+Rules
+
+- Never modify the schema of any tallydata_* table.
+- Never insert data into any tallydata_* table.
+- Never update data in any tallydata_* table.
+- Never delete data from any tallydata_* table.
+- Never rename any tallydata_* table.
+- Never create indexes on tallydata_* tables.
+- Never include tallydata_* tables in Alembic migrations.
+- Treat all tallydata_* tables as read-only.
+- If a requested feature appears to require modifying a tallydata_* table, stop and ask for confirmation before proceeding.
+
+Application features requiring additional data must use separate `yorapet_*` tables that reference the legacy tables when appropriate.
+
+The application must always remain compatible with future Tally imports and synchronization.

@@ -1,0 +1,229 @@
+---
+description: Frontend stack, structure, forms, UI, and table design rules
+globs: frontend/**/*.{ts,tsx,css}
+alwaysApply: false
+---
+
+# Frontend Rules
+
+## Tech Stack
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- TanStack Query
+- Axios
+- React Hook Form
+- Zod
+
+---
+
+## Folder Structure
+
+src/
+
+components/
+
+pages/
+
+layouts/
+
+hooks/
+
+services/
+
+contexts/
+
+types/
+
+utils/
+
+assets/
+
+---
+
+## Components
+
+- Functional components only
+- Keep components focused
+- Extract reusable UI
+- Avoid duplicated code
+
+---
+
+## State
+
+Use
+
+- React Query for server state
+- Context for authentication
+- Local state for UI
+
+Avoid unnecessary global state.
+
+---
+
+## Forms
+
+- React Hook Form
+- Zod validation
+
+Display field-level validation errors on the field helpers.
+
+### Form messages (content footer)
+
+All submit / API success and error messages must use `useFormMessage()` (`showSuccess`, `showError`, `showInfo`, `showErrors`). Do not render ad-hoc success/error banners inside forms or pages.
+
+- Inside the authenticated shell, messages appear in the content section footer (`FormMessageInline` in `AppLayout`).
+- Outside the shell (e.g. login), the same API shows floating toasts.
+- Keep field validation errors on the input; put operational messages in the footer.
+- Prefer `useFormMessage` from `@/hooks/useFormMessage` or `@/components/forms`.
+
+### Autofill
+
+Browser autofill must always stay disabled on every form. Never enable it unless explicitly requested.
+
+- Every form must set `autoComplete="off"` (the `FormPanel` wrapper does this).
+- Field helpers (`FormInput`, `FormSelect`, `FormTextarea`, `FormAutocomplete`) default to `autoComplete="new-password"` because Chrome ignores `"off"` on address/email/password fields. They also set `data-1p-ignore` and `data-lpignore` to suppress password managers.
+- Any raw `input`, `select`, or `textarea` must apply the same attributes (`autoComplete="new-password"`, `data-1p-ignore`, `data-lpignore`).
+- Spread `{...props}` before these attributes so callers cannot re-enable autofill by accident.
+- Prefer `type="text"` with an appropriate `inputMode` over `type="email"` / `type="tel"` unless a native type is explicitly required.
+- `FormInput` must remain read-only until the user focuses it, then lock again on blur. This prevents Chrome from injecting credentials before user interaction.
+- Recognizable login fields must use `autoComplete="one-time-code"` in addition to the read-only focus gate because Chrome may ignore both `"off"` and `"new-password"`.
+- Apply `aria-autocomplete="none"`, `data-bwignore`, `data-protonpass-ignore`, and `data-form-type="other"` where browser or password-manager autofill is likely.
+
+---
+
+## API
+
+- Use one Axios instance
+- Centralized API layer
+- Handle token refresh
+- Handle unauthorized responses
+
+---
+
+## UI
+
+- Responsive
+- Mobile friendly
+- Accessible
+- Consistent spacing
+- Consistent typography
+- Page headers must always be breadcrumbs via `PageHeader` / `PageBreadcrumb`. Never use a title + description block as the page header.
+
+### default-win-form
+
+- Default shell name: `default-win-form`. `FormPanel` always applies it; custom markup using `default-win-form` / `default-win-form__*` gets the same styling.
+- Primary actions: `defaultWinForm.buttonPrimary` (or `default-win-form__button default-win-form__button--primary`).
+- Prefer that chrome over ad-hoc bordered cards.
+- **Final spacing (do not change without explicit user request).** Source of truth: `frontend/src/styles/forms.css`.
+
+Sizing tokens on `.default-win-form`:
+
+- Inputs: `--form-control-font-size: 0.9375rem`, `--form-control-line-height: 1.35`, `--form-control-pad-y: 0.45rem`, `--form-control-pad-x: 0.75rem`
+- Buttons (separate from inputs): `--form-button-pad-y: 0.35rem`, `--form-button-pad-x: 0.6rem` — do not inherit input padding or input height
+- Header/footer bars (equal height): `--form-bar-pad-y: 0.45rem`, `--form-bar-min-height: calc(var(--form-control-height) + (var(--form-bar-pad-y) * 2))`
+- Body: `0.85rem` padding; fields: `0.28rem` label gap, `0.65rem` field spacing
+- Wide variant body: `0.65rem 0.7rem`; wide header/footer inline: `0.7rem`
+- Depth: Yoradm-style inset top rim (`box-shadow: 0 1px 0 … inset`), not drop shadow
+
+Rules:
+
+- Header and footer share `--form-bar-min-height` and `--form-bar-pad-y`; footer padding is outside the button, not inside it
+- `--form-control-height` is derived from input font/line-height/padding; bars grow with it automatically
+- Never shrink footer buttons to fit bar height; keep compact button padding tokens instead
+- Every `default-win-form` header should include an appropriate semantic icon via `FormPanel`'s `titleIcon` prop
+- Reuse the shared header icon size from `.default-win-form__title-icon`; keep it consistent at `1.15rem` instead of one-off per-form sizing
+- **Icons: Heroicons only** (`@heroicons/react/24/outline`). Import from `frontend/src/components/forms/formIcons.tsx`; never add custom inline SVG icons for forms, settings, or modals
+
+### Icons
+
+- Use **Heroicons** outline (`@heroicons/react/24/outline`) exclusively for UI icons in forms, settings, and modals
+- Re-export shared icons from `frontend/src/components/forms/formIcons.tsx` so naming stays consistent across the app
+- Do not hand-draw or copy ad-hoc SVG paths; add new icons via Heroicons and export them from `formIcons.tsx`
+
+### Settings
+
+Settings open as a modal (`SettingsModal` via `useSettings().openSettings()`), not as a content-section page — same pattern as Yoradm. Sidebar Settings is a button, not a route. `/settings` and `/users` open the modal then navigate home.
+
+### Tables
+
+All data tables must use the Yoradm-style `app-table` pattern from `frontend/src/index.css`. Do not invent one-off Tailwind table layouts.
+
+Required markup — sticky header, scrollable body, fixed footer:
+
+```tsx
+<div className="app-table-wrap app-table-shell">
+  <div className="app-table-scroll">
+    <table className="app-table">
+      <thead>
+        <tr>
+          <th>Column</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Value</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div className="app-table-foot">
+    <span className="app-table-foot-label">1 row</span>
+  </div>
+</div>
+```
+
+Rules:
+
+- Always use `app-table-shell` + `app-table-scroll` + `app-table-foot`. Header stays fixed via sticky `thead`; body scrolls in `app-table-scroll`; footer stays fixed below the scroll area.
+- Wrap bordered page tables in `app-table-wrap` (bordered, rounded). Flush/tab tables (e.g. Settings Users) may use `app-table-shell` without the wrap.
+- Every table must include an `app-table-foot` (count, totals, or status). Do not omit it.
+- Use `app-table` on the `<table>` (sticky muted headers, compact cells, hairline row dividers).
+- In-row selects use `app-table-select` — not ad-hoc bordered selects.
+- Numeric / ID columns use `app-table-num` (right-aligned, tabular nums via mono).
+- Empty / loading / error states inside the scroll area use `app-table-empty` (or a single empty `<td colSpan={…} className="app-table-empty">`).
+- Prefer extending `app-table*` in `index.css` over page-local table CSS when a new shared variant is needed.
+
+Reference: Settings Users (`frontend/src/components/settings/UsersPanel.tsx`) and Yoradm `win-form__table-shell`.
+
+---
+
+## Performance
+
+- Lazy loading where appropriate
+- Avoid unnecessary renders
+- Memoize only when beneficial
+
+---
+
+## Development
+
+Before creating a page:
+
+- Explain component hierarchy
+- List files to be created
+- Reuse existing components whenever possible
+
+## Frontend Environment Files
+
+Frontend configuration must use:
+
+- .env
+- .env.production
+
+Examples include:
+
+- API Base URL
+- Application Name
+- Feature Flags
+- Build Configuration
+
+When introducing a new environment variable:
+
+- Add it to both .env and .env.production.
+- Use the same variable names across environments.
+- Never hardcode API URLs inside components.

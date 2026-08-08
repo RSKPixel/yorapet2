@@ -1,0 +1,128 @@
+# Backend Rules
+
+## Tech Stack
+
+- Python 3.13+
+- FastAPI
+- SQLAlchemy 2.x
+- Pydantic v2
+- Alembic
+- MySQL
+- JWT Authentication
+
+---
+
+## Architecture
+
+Use the following structure.
+
+app/
+    api/
+    core/
+    db/
+    models/
+    schemas/
+    services/
+    repositories/
+    middleware/
+    dependencies/
+    utils/
+
+---
+
+## Responsibilities
+
+API Routes
+- Accept requests
+- Validate input
+- Call services
+- Return responses
+
+Services
+- Business logic only
+- No HTTP code
+- No database queries
+
+Repositories
+- Database operations only
+- SQLAlchemy ORM only
+
+Models
+- Database models only
+
+Schemas
+- Request and response validation
+
+---
+
+## API Design
+
+- RESTful endpoints
+- Proper HTTP status codes
+- Pagination for list endpoints
+- Filtering where appropriate
+- Searching where appropriate
+- Sorting where appropriate
+
+---
+
+## Error Handling
+
+- Raise meaningful exceptions
+- Never expose internal errors
+- Log unexpected exceptions
+- Return consistent error responses
+
+---
+
+## Authentication
+
+- JWT
+- Password hashing
+- Dependency-based authentication
+- Role-based authorization where required
+
+---
+
+## Configuration
+
+- Environment variables only
+- Never hardcode secrets
+- Centralized configuration
+
+---
+
+## Development
+
+Before implementing:
+
+1. Explain the approach.
+2. List affected files.
+3. Mention database changes.
+4. Mention API changes.
+
+## Environment Configuration
+
+Configuration must be loaded from environment files.
+
+Supported files
+
+- .env
+- .env.production
+
+Database credentials, API keys, JWT secrets, and all environment-specific settings must come from these files.
+
+Never hardcode configuration values.
+
+If a new configuration value is required, update both:
+
+- .env
+- .env.production
+
+Keep both files synchronized with the same variable names.
+
+Use sensible development and production values.
+
+Document any newly added environment variables.
+
+Never modify unrelated files unless requested.

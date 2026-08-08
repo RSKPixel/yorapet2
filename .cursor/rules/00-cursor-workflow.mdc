@@ -1,0 +1,22 @@
+
+
+# Cursor Workflow
+
+For every implementation:
+
+1. Understand the requirement completely.
+2. Ask questions if anything is ambiguous.
+3. Explain the implementation plan.
+4. List files to create or modify.
+5. Implement the smallest complete solution.
+6. Do not modify unrelated files.
+7. Preserve existing architecture.
+8. Prefer extending existing code over rewriting it.
+9. Ensure the project builds successfully after changes.
+10. At the end, summarize:
+   - Files changed
+   - Database changes
+   - API changes
+   - Any manual steps required
+
+If you identify a recurring architectural or coding pattern during development, suggest whether it should be added to the appropriate `.cursor/rules/*.mdc` file before finishing the task.

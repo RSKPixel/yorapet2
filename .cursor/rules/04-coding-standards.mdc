@@ -1,0 +1,139 @@
+# Coding Standards
+
+## General
+
+Write production-quality code.
+
+Optimize for
+
+- Readability
+- Maintainability
+- Scalability
+
+---
+
+## Principles
+
+Follow
+
+- SOLID
+- DRY
+- KISS
+
+---
+
+## Functions
+
+- Small
+- Single responsibility
+- Descriptive names
+- Avoid deep nesting
+
+---
+
+## Variables
+
+Use meaningful names.
+
+Avoid abbreviations.
+
+Good
+
+customer_name
+
+Bad
+
+cn
+
+---
+
+## Comments
+
+Write comments only when needed.
+
+Prefer self-explanatory code.
+
+---
+
+## Imports
+
+Organize imports.
+
+Remove unused imports.
+
+---
+
+## Error Handling
+
+Handle expected errors.
+
+Do not silently ignore exceptions.
+
+---
+
+## Security
+
+Validate all inputs.
+
+Never trust client data.
+
+Never hardcode
+
+- passwords
+- API keys
+- secrets
+
+---
+
+## Refactoring
+
+Do not refactor unrelated code.
+
+Preserve existing behavior.
+
+---
+
+## Before Coding
+
+Always
+
+1. Explain the solution.
+2. Mention assumptions.
+3. List affected files.
+4. Then generate code.
+
+---
+
+## Quality Checklist
+
+Before finishing
+
+- No syntax errors
+- Correct imports
+- Type hints
+- No duplicated code
+- No placeholder implementations
+- Consistent formatting
+
+---
+alwaysApply: true
+---
+
+## Environment Files
+
+Environment files are part of the project.
+
+Files
+
+- backend/.env
+- backend/.env.production
+- frontend/.env
+- frontend/.env.production
+
+These files must be maintained whenever configuration changes.
+
+Do not remove them.
+
+Do not rename them.
+
+If a new environment variable is introduced, update both development and production environment files.

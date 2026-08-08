@@ -1,0 +1,30 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+dist/
+build/
+*.egg-info/
+.eggs/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.log
+.DS_Store
+.idea/
+.vscode/
+
+# Uploaded media (inventory images, etc.)
+uploads/
+
+# Local override files (committed .env / .env.production use placeholders only)
+.env.local
+.env.*.local

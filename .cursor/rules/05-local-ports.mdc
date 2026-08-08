@@ -1,0 +1,38 @@
+---
+description: Fixed local ports for frontend and backend
+alwaysApply: true
+---
+
+# Local Development Ports
+
+Always use these ports. Do not change them unless the user explicitly asks.
+
+| App | Port | URL |
+|-----|------|-----|
+| Frontend (Vite) | **5173** | http://localhost:5173 |
+| Backend (uvicorn) | **8000** | http://127.0.0.1:8000 |
+
+## Commands
+
+Backend:
+
+```bash
+cd backend
+source .venv/bin/activate
+APP_ENV=development uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm run dev
+```
+
+`npm run dev` must serve on port 5173. Vite is already configured for this in `frontend/vite.config.ts`.
+
+## Related config
+
+- Frontend CORS / API: backend allows `http://localhost:5173` and `http://127.0.0.1:5173`
+- Vite proxy targets `http://127.0.0.1:8000`
+- Prefer `VITE_API_BASE_URL=/api/v1` in development so the proxy stays same-origin
