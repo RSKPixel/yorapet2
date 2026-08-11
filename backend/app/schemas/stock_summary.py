@@ -15,6 +15,7 @@ class StockSummaryItem(BaseModel):
     sales_qty: float
     closing_qty: float
     closing_rate: float | None = None
+    closing_value: float | None = None
 
 
 class StockSummaryResponse(BaseModel):

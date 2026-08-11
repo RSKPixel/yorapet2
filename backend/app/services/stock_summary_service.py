@@ -86,31 +86,43 @@ class StockSummaryService:
         )
         fifo_rates = compute_fifo_avg_prices_by_item(fifo_movements)
 
-        items = [
-            StockSummaryItem(
-                stock_item=stock_item,
-                stock_group=stock_groups.get(stock_item.lower()) or None,
-                opening_qty=round(bucket.opening_qty, 2),
-                purchase_qty=round(bucket.purchase_qty, 2),
-                sales_qty=round(bucket.sales_qty, 2),
-                closing_qty=round(bucket.closing_qty, 2),
-                closing_rate=(
-                    round(fifo_rates[stock_item], 2)
-                    if stock_item in fifo_rates
-                    and fifo_rates[stock_item] is not None
-                    and bucket.closing_qty > 0
-                    else None
-                ),
-            )
-            for stock_item, bucket in buckets.items()
-            if stock_item
-            and (
+        items: list[StockSummaryItem] = []
+        for stock_item, bucket in buckets.items():
+            if not stock_item:
+                continue
+            if not (
                 abs(bucket.opening_qty) > 1e-9
                 or abs(bucket.purchase_qty) > 1e-9
                 or abs(bucket.sales_qty) > 1e-9
                 or abs(bucket.closing_qty) > 1e-9
+            ):
+                continue
+
+            closing_qty = round(bucket.closing_qty, 2)
+            closing_rate = (
+                round(fifo_rates[stock_item], 2)
+                if stock_item in fifo_rates
+                and fifo_rates[stock_item] is not None
+                and bucket.closing_qty > 0
+                else None
             )
-        ]
+            closing_value = (
+                round(closing_qty * closing_rate, 2)
+                if closing_rate is not None
+                else None
+            )
+            items.append(
+                StockSummaryItem(
+                    stock_item=stock_item,
+                    stock_group=stock_groups.get(stock_item.lower()) or None,
+                    opening_qty=round(bucket.opening_qty, 2),
+                    purchase_qty=round(bucket.purchase_qty, 2),
+                    sales_qty=round(bucket.sales_qty, 2),
+                    closing_qty=closing_qty,
+                    closing_rate=closing_rate,
+                    closing_value=closing_value,
+                ),
+            )
         items.sort(
             key=lambda row: (
                 (row.stock_group or "").lower(),

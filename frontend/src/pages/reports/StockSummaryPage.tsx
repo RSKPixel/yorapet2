@@ -81,9 +81,12 @@ function StockSummaryColgroup() {
   return (
     <colgroup>
       <col />
-      <col className="sales-report-col-buyer" />
+      <col style={{ width: "18%" }} />
       <col className="sales-report-col-qty" />
       <col className="sales-report-col-rate" />
+      <col className="sales-report-col-rate" />
+      {/* Trailing gutter so Value is not :last-child (scrollbar / last-col padding). */}
+      <col className="sales-report-col-gutter" />
     </colgroup>
   );
 }
@@ -152,6 +155,11 @@ export function StockSummaryPage() {
     () => filteredRows.reduce((sum, row) => sum + row.closing_qty, 0),
     [filteredRows],
   );
+  const totalClosingValue = useMemo(
+    () =>
+      filteredRows.reduce((sum, row) => sum + (row.closing_value ?? 0), 0),
+    [filteredRows],
+  );
 
   return (
     <section className="report-page">
@@ -209,20 +217,22 @@ export function StockSummaryPage() {
                 {(summaryQuery.error as Error).message}
               </p>
             ) : (
-              <table className="app-table app-table--sales-report">
+              <table className="app-table app-table--sales-report app-table--stock-summary">
                 <StockSummaryColgroup />
                 <thead>
                   <tr>
                     <th>Stock item</th>
                     <th>Group</th>
                     <th className="app-table-num">Closing</th>
-                    <th className="app-table-num">Closing rate</th>
+                    <th className="app-table-num">Cost price</th>
+                    <th className="app-table-num">Value</th>
+                    <th aria-hidden="true" />
                   </tr>
                 </thead>
                 <tbody>
                   {rowCount === 0 ? (
                     <tr>
-                      <td colSpan={4} className="app-table-empty">
+                      <td colSpan={6} className="app-table-empty">
                         No stock movements found as on this date.
                       </td>
                     </tr>
@@ -239,6 +249,10 @@ export function StockSummaryPage() {
                         <td className="app-table-num">
                           {formatRate(row.closing_rate)}
                         </td>
+                        <td className="app-table-num">
+                          {formatRate(row.closing_value)}
+                        </td>
+                        <td aria-hidden="true" />
                       </tr>
                     ))
                   )}
@@ -247,11 +261,11 @@ export function StockSummaryPage() {
             )}
           </div>
           <div className="app-table-foot app-table-foot--aligned">
-            <table className="app-table app-table--sales-report">
+            <table className="app-table app-table--sales-report app-table--stock-summary">
               <StockSummaryColgroup />
               <tbody>
                 <tr>
-                  <td colSpan={2}>
+                  <td>
                     <span className="app-table-foot-label">
                       {summaryQuery.isLoading
                         ? "Loading…"
@@ -260,12 +274,19 @@ export function StockSummaryPage() {
                           : `${rowCount} item${rowCount === 1 ? "" : "s"}`}
                     </span>
                   </td>
+                  <td />
                   <td className="app-table-num">
                     {!summaryQuery.isLoading && !summaryQuery.isError
                       ? formatNumber(totalClosing)
                       : "—"}
                   </td>
                   <td />
+                  <td className="app-table-num">
+                    {!summaryQuery.isLoading && !summaryQuery.isError
+                      ? formatRate(totalClosingValue)
+                      : "—"}
+                  </td>
+                  <td aria-hidden="true" />
                 </tr>
               </tbody>
             </table>

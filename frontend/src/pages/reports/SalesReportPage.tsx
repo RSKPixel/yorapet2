@@ -578,7 +578,16 @@ export function SalesReportPage() {
         ]}
       />
 
-      <div className="report-page__toolbar mt-1">
+      <div
+        className={[
+          "report-page__toolbar mt-1",
+          isSummary && groupBy !== "voucher"
+            ? "report-page__toolbar--cols-4"
+            : null,
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
         <FormField label="Period">
           <FormDropdown
             className="report-page__period"
@@ -643,36 +652,42 @@ export function SalesReportPage() {
             />
           </FormField>
         ) : null}
-        <FormField label="Buyer" className="report-page__filter-search">
-          <FormAutocomplete
-            options={buyerOptions}
-            value={buyer}
-            onChange={setBuyer}
-            disabled={filtersDisabled || !buyerFilterEnabled}
-            placeholder="All buyers"
-            emptyMessage="No buyers in this period"
-          />
-        </FormField>
-        <FormField label="Stock group" className="report-page__filter-search">
-          <FormAutocomplete
-            options={stockGroupOptions}
-            value={stockGroup}
-            onChange={setStockGroup}
-            disabled={filtersDisabled || !stockGroupFilterEnabled}
-            placeholder="All stock groups"
-            emptyMessage="No stock groups in this period"
-          />
-        </FormField>
-        <FormField label="Stock item" className="report-page__filter-search">
-          <FormAutocomplete
-            options={stockItemOptions}
-            value={stockItem}
-            onChange={setStockItem}
-            disabled={filtersDisabled || !stockItemFilterEnabled}
-            placeholder="All stock items"
-            emptyMessage="No stock items in this period"
-          />
-        </FormField>
+        {buyerFilterEnabled ? (
+          <FormField label="Buyer" className="report-page__filter-search">
+            <FormAutocomplete
+              options={buyerOptions}
+              value={buyer}
+              onChange={setBuyer}
+              disabled={filtersDisabled}
+              placeholder="All buyers"
+              emptyMessage="No buyers in this period"
+            />
+          </FormField>
+        ) : null}
+        {stockGroupFilterEnabled ? (
+          <FormField label="Stock group" className="report-page__filter-search">
+            <FormAutocomplete
+              options={stockGroupOptions}
+              value={stockGroup}
+              onChange={setStockGroup}
+              disabled={filtersDisabled}
+              placeholder="All stock groups"
+              emptyMessage="No stock groups in this period"
+            />
+          </FormField>
+        ) : null}
+        {stockItemFilterEnabled ? (
+          <FormField label="Stock item" className="report-page__filter-search">
+            <FormAutocomplete
+              options={stockItemOptions}
+              value={stockItem}
+              onChange={setStockItem}
+              disabled={filtersDisabled}
+              placeholder="All stock items"
+              emptyMessage="No stock items in this period"
+            />
+          </FormField>
+        ) : null}
       </div>
 
       <div className="app-table-wrap report-page__table mt-4">

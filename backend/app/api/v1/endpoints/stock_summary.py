@@ -26,7 +26,7 @@ async def get_stock_summary(
     session: DbSessionDep,
     as_on: date = Query(..., description="As-on date (inclusive)"),
 ) -> StockSummaryResponse:
-    """Return opening, purchase, sales, closing qty and FIFO closing rate as on date."""
+    """Return opening, purchase, sales, closing qty, FIFO cost price and value as on date."""
     return await StockSummaryService(
         OpeningStockRepository(session),
         PurchaseRepository(session),

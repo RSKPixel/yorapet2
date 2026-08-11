@@ -399,6 +399,10 @@
   flex-shrink: 0;
 }
 
+.report-page__toolbar--cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .report-page__toolbar .default-win-form__field {
   min-width: 0;
   width: 100%;
@@ -464,13 +468,15 @@
 }
 
 @media (max-width: 48rem) {
-  .report-page__toolbar {
+  .report-page__toolbar,
+  .report-page__toolbar--cols-4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 30rem) {
-  .report-page__toolbar {
+  .report-page__toolbar,
+  .report-page__toolbar--cols-4 {
     grid-template-columns: minmax(0, 1fr);
   }
 }
@@ -503,9 +509,26 @@
   width: 7.5rem;
 }
 
+.app-table--sales-report .sales-report-col-gutter {
+  width: 0.85rem;
+}
+
 .app-table--sales-report th:last-child,
 .app-table--sales-report td:last-child {
   padding-right: 0.85rem;
+}
+
+/* Stock summary: Value is not last-child; keep same padding as Closing. */
+.app-table--stock-summary th:nth-last-child(2),
+.app-table--stock-summary td:nth-last-child(2) {
+  padding-right: 0.55rem;
+}
+
+.app-table--stock-summary th:last-child,
+.app-table--stock-summary td:last-child {
+  padding-left: 0;
+  padding-right: 0;
+  border-bottom-color: transparent;
 }
 
 .app-table--sales-report th,

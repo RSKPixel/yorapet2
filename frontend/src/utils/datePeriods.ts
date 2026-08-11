@@ -44,7 +44,7 @@ export const SALES_REPORT_VIEW_OPTIONS: ReportViewOption[] = [
   { value: "summary", label: "Summary" },
   {
     value: "summary_previous_period",
-    label: "Summary with Previous Period",
+    label: "Summary + previous period",
   },
 ];
 
@@ -65,6 +65,25 @@ export const SALES_SUMMARY_GROUP_BY_OPTIONS: SalesSummaryGroupByOption[] = [
   { value: "stock_item", label: "Stock item" },
   { value: "voucher", label: "Voucher" },
 ];
+
+export type PurchaseSummaryGroupByKey =
+  | "voucher"
+  | "supplier"
+  | "stock_item"
+  | "stock_group";
+
+export type PurchaseSummaryGroupByOption = {
+  value: PurchaseSummaryGroupByKey;
+  label: string;
+};
+
+export const PURCHASE_SUMMARY_GROUP_BY_OPTIONS: PurchaseSummaryGroupByOption[] =
+  [
+    { value: "stock_group", label: "Stock group" },
+    { value: "supplier", label: "Supplier" },
+    { value: "stock_item", label: "Stock item" },
+    { value: "voucher", label: "Voucher" },
+  ];
 
 function toIsoDate(date: Date) {
   const year = date.getFullYear();

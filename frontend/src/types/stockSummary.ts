@@ -6,6 +6,7 @@ export type StockSummaryItem = {
   sales_qty: number;
   closing_qty: number;
   closing_rate: number | null;
+  closing_value: number | null;
 };
 
 export type StockSummaryResponse = {
