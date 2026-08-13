@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
 import {
-  FormAutocomplete,
   FormDropdown,
   FormField,
+  FormMultiSelect,
 } from "@/components/forms";
 import type { FormDropdownOption } from "@/components/forms";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -60,7 +60,7 @@ function formatText(value: string | null | undefined) {
   return trimmed ? trimmed : "—";
 }
 
-function uniqueOptions(
+function uniqueGroupOptions(
   values: Array<string | null | undefined>,
   allLabel: string,
 ): FormDropdownOption[] {
@@ -75,6 +75,17 @@ function uniqueOptions(
       .sort((a, b) => a.localeCompare(b))
       .map((value) => ({ value, label: value })),
   ];
+}
+
+function stockItemOptionsFromRows(rows: StockSummaryItem[]): FormDropdownOption[] {
+  const unique = new Set(
+    rows
+      .map((row) => row.stock_item?.trim() ?? "")
+      .filter(Boolean),
+  );
+  return Array.from(unique)
+    .sort((a, b) => a.localeCompare(b))
+    .map((value) => ({ value, label: value }));
 }
 
 function StockSummaryColgroup() {
@@ -93,8 +104,9 @@ function StockSummaryColgroup() {
 
 export function StockSummaryPage() {
   const asOn = todayIso();
+  const [belowReorderOnly, setBelowReorderOnly] = useState(false);
   const [stockGroup, setStockGroup] = useState("");
-  const [stockItem, setStockItem] = useState("");
+  const [stockItems, setStockItems] = useState<string[]>([]);
 
   const summaryQuery = useQuery({
     queryKey: ["stock-summary", asOn],
@@ -104,7 +116,7 @@ export function StockSummaryPage() {
   const rows = summaryQuery.data?.items ?? [];
 
   const stockGroupOptions = useMemo(
-    () => uniqueOptions(rows.map((row) => row.stock_group), "All groups"),
+    () => uniqueGroupOptions(rows.map((row) => row.stock_group), "All groups"),
     [rows],
   );
 
@@ -112,11 +124,13 @@ export function StockSummaryPage() {
     const scoped = stockGroup
       ? rows.filter((row) => (row.stock_group?.trim() ?? "") === stockGroup)
       : rows;
-    return uniqueOptions(
-      scoped.map((row) => row.stock_item),
-      "All stock items",
-    );
+    return stockItemOptionsFromRows(scoped);
   }, [rows, stockGroup]);
+
+  const belowReorderCount = useMemo(
+    () => rows.filter((row) => row.below_reorder).length,
+    [rows],
+  );
 
   useEffect(() => {
     if (
@@ -128,26 +142,30 @@ export function StockSummaryPage() {
   }, [stockGroup, stockGroupOptions]);
 
   useEffect(() => {
-    if (
-      stockItem &&
-      !stockItemOptions.some((option) => option.value === stockItem)
-    ) {
-      setStockItem("");
-    }
-  }, [stockItem, stockItemOptions]);
+    const allowed = new Set(stockItemOptions.map((option) => option.value));
+    setStockItems((current) =>
+      current.filter((item) => allowed.has(item)),
+    );
+  }, [stockItemOptions]);
 
   const filteredRows = useMemo(
     () =>
       rows.filter((row) => {
+        if (belowReorderOnly && !row.below_reorder) {
+          return false;
+        }
         if (stockGroup && (row.stock_group?.trim() ?? "") !== stockGroup) {
           return false;
         }
-        if (stockItem && row.stock_item.trim() !== stockItem) {
+        if (
+          stockItems.length > 0 &&
+          !stockItems.includes(row.stock_item.trim())
+        ) {
           return false;
         }
         return true;
       }),
-    [rows, stockGroup, stockItem],
+    [rows, belowReorderOnly, stockGroup, stockItems],
   );
 
   const rowCount = filteredRows.length;
@@ -185,7 +203,7 @@ export function StockSummaryPage() {
             value={stockGroup}
             onChange={(value) => {
               setStockGroup(value);
-              setStockItem("");
+              setStockItems([]);
             }}
             disabled={summaryQuery.isLoading}
             placeholder="All groups"
@@ -193,14 +211,41 @@ export function StockSummaryPage() {
           />
         </FormField>
         <FormField label="Stock item" className="report-page__filter-search">
-          <FormAutocomplete
-            options={stockItemOptions}
-            value={stockItem}
-            onChange={setStockItem}
-            disabled={summaryQuery.isLoading}
-            placeholder="All stock items"
-            emptyMessage="No stock items as on this date"
-          />
+          <div className="report-page__stock-item-row">
+            <FormMultiSelect
+              options={stockItemOptions}
+              value={stockItems}
+              onChange={setStockItems}
+              disabled={summaryQuery.isLoading}
+              placeholder="All stock items"
+              emptyMessage="No stock items as on this date"
+              listClassName="report-page__filter-list"
+            />
+            {belowReorderCount > 0 ? (
+              <button
+                type="button"
+                className={[
+                  "stock-summary-reorder-badge",
+                  "stock-summary-reorder-badge--filter",
+                  belowReorderOnly
+                    ? "is-filled"
+                    : "is-outline",
+                ].join(" ")}
+                aria-pressed={belowReorderOnly}
+                title={
+                  belowReorderOnly
+                    ? "Clear reorder filter"
+                    : "Show reorder items only"
+                }
+                onClick={() => setBelowReorderOnly((current) => !current)}
+              >
+                Reorder
+                <span className="stock-summary-reorder-badge__count">
+                  {belowReorderCount}
+                </span>
+              </button>
+            ) : null}
+          </div>
         </FormField>
       </div>
 
@@ -233,17 +278,49 @@ export function StockSummaryPage() {
                   {rowCount === 0 ? (
                     <tr>
                       <td colSpan={6} className="app-table-empty">
-                        No stock movements found as on this date.
+                        {belowReorderOnly
+                          ? "No reorder items match the selected filters."
+                          : "No stock movements found as on this date."}
                       </td>
                     </tr>
                   ) : (
                     filteredRows.map((row: StockSummaryItem) => (
-                      <tr key={row.stock_item}>
-                        <td title={row.stock_item}>{row.stock_item}</td>
+                      <tr
+                        key={row.stock_item}
+                        className={
+                          row.below_reorder
+                            ? "app-table-row--reorder"
+                            : undefined
+                        }
+                      >
+                        <td title={row.stock_item}>
+                          <span className="stock-summary-item-cell">
+                            <span className="stock-summary-item-name">
+                              {row.stock_item}
+                            </span>
+                            {row.below_reorder ? (
+                              <span
+                                className="stock-summary-reorder-badge is-filled"
+                                title="Below 30-day reorder level"
+                              >
+                                Reorder
+                              </span>
+                            ) : null}
+                          </span>
+                        </td>
                         <td title={row.stock_group?.trim() || undefined}>
                           {formatText(row.stock_group)}
                         </td>
-                        <td className="app-table-num">
+                        <td
+                          className={[
+                            "app-table-num",
+                            row.below_reorder
+                              ? "app-table-num--reorder"
+                              : "",
+                          ]
+                            .filter(Boolean)
+                            .join(" ")}
+                        >
                           {formatNumber(row.closing_qty)}
                         </td>
                         <td className="app-table-num">
@@ -271,7 +348,11 @@ export function StockSummaryPage() {
                         ? "Loading…"
                         : summaryQuery.isError
                           ? "—"
-                          : `${rowCount} item${rowCount === 1 ? "" : "s"}`}
+                          : `${rowCount} item${rowCount === 1 ? "" : "s"}${
+                              belowReorderOnly && rows.length > 0
+                                ? ` / ${rows.length}`
+                                : ""
+                            }`}
                     </span>
                   </td>
                   <td />

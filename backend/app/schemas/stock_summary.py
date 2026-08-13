@@ -16,6 +16,11 @@ class StockSummaryItem(BaseModel):
     closing_qty: float
     closing_rate: float | None = None
     closing_value: float | None = None
+    # Reorder: last 30 days sales qty (inclusive of as_on); below when closing < that.
+    sales_30d_qty: float = 0.0
+    reorder_level: float = 0.0
+    days_cover: float | None = None
+    below_reorder: bool = False
 
 
 class StockSummaryResponse(BaseModel):

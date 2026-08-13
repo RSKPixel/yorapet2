@@ -70,7 +70,8 @@ export type PurchaseSummaryGroupByKey =
   | "voucher"
   | "supplier"
   | "stock_item"
-  | "stock_group";
+  | "stock_group"
+  | "stock_group_vendor";
 
 export type PurchaseSummaryGroupByOption = {
   value: PurchaseSummaryGroupByKey;
@@ -80,10 +81,86 @@ export type PurchaseSummaryGroupByOption = {
 export const PURCHASE_SUMMARY_GROUP_BY_OPTIONS: PurchaseSummaryGroupByOption[] =
   [
     { value: "stock_group", label: "Stock group" },
+    { value: "stock_group_vendor", label: "Stock group + vendor" },
     { value: "supplier", label: "Supplier" },
     { value: "stock_item", label: "Stock item" },
     { value: "voucher", label: "Voucher" },
   ];
+
+/** Indian FY month order: Apr → Mar. */
+export const FY_MONTH_LABELS = [
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+  "Jan",
+  "Feb",
+  "Mar",
+] as const;
+
+export function isFinancialYearPeriod(period: SalesPeriodKey) {
+  return period === "current_fy" || period === "previous_fy";
+}
+
+export function emptyFyMonthQtys(): number[] {
+  return Array.from({ length: FY_MONTH_LABELS.length }, () => 0);
+}
+
+/** Index 0=Apr … 11=Mar within the FY that starts on `fyStartYear`-04-01. */
+export function fyMonthIndex(
+  voucherDate: string | null | undefined,
+  fyStartYear: number,
+): number | null {
+  if (!voucherDate) {
+    return null;
+  }
+  const day = voucherDate.slice(0, 10);
+  const year = Number(day.slice(0, 4));
+  const month = Number(day.slice(5, 7));
+  if (!year || !month) {
+    return null;
+  }
+  if (month >= 4) {
+    if (year !== fyStartYear) {
+      return null;
+    }
+    return month - 4;
+  }
+  if (year !== fyStartYear + 1) {
+    return null;
+  }
+  return month + 8;
+}
+
+export function fyStartYearFromRange(range: DateRange) {
+  return Number(range.dateFrom.slice(0, 4));
+}
+
+/**
+ * How many FY months to show (Apr=1 … Mar=12), excluding months after `reference`.
+ * Past FYs return all 12; the current FY returns through the current month.
+ */
+export function visibleFyMonthCount(
+  fyStartYear: number,
+  reference = new Date(),
+): number {
+  const refYear = reference.getFullYear();
+  const refMonth = reference.getMonth() + 1;
+  const currentFyStart = refMonth >= 4 ? refYear : refYear - 1;
+  if (fyStartYear < currentFyStart) {
+    return FY_MONTH_LABELS.length;
+  }
+  if (fyStartYear > currentFyStart) {
+    return 0;
+  }
+  const index = refMonth >= 4 ? refMonth - 4 : refMonth + 8;
+  return index + 1;
+}
 
 function toIsoDate(date: Date) {
   const year = date.getFullYear();

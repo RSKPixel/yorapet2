@@ -253,6 +253,26 @@
   scrollbar-gutter: stable;
 }
 
+.app-table-scroll--monthly {
+  overflow: auto;
+}
+
+.app-table-foot--aligned.app-table-foot--monthly {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-gutter: auto;
+}
+
+.app-table--monthly-breakup {
+  width: max-content;
+  min-width: 100%;
+  table-layout: fixed;
+}
+
+.app-table-foot--aligned .app-table--monthly-breakup {
+  min-width: max-content;
+}
+
 .app-table-foot--aligned .app-table {
   min-width: 36rem;
   table-layout: fixed;
@@ -386,6 +406,20 @@
   flex-shrink: 0;
 }
 
+.report-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.report-page__export-error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: 0.875rem;
+}
+
 .report-page__table {
   min-height: 0;
   flex: 1 1 auto;
@@ -467,6 +501,170 @@
   min-width: 0;
 }
 
+.report-page__stock-item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  width: 100%;
+}
+
+.report-page__stock-item-row > .default-win-form__multi-select {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.stock-summary-item-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.stock-summary-item-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stock-summary-reorder-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, #d97706 55%, transparent);
+  border-radius: 0.35rem;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.stock-summary-reorder-badge.is-filled {
+  background: color-mix(in srgb, #d97706 18%, var(--color-surface));
+  color: color-mix(in srgb, #d97706 88%, var(--color-ink));
+}
+
+.stock-summary-reorder-badge.is-outline {
+  background: transparent;
+  color: color-mix(in srgb, #d97706 75%, var(--color-muted));
+}
+
+.stock-summary-reorder-badge--filter {
+  height: var(--form-control-height);
+  padding: 0 0.65rem;
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.stock-summary-reorder-badge--filter:hover {
+  background: color-mix(in srgb, #d97706 12%, var(--color-surface));
+  color: color-mix(in srgb, #d97706 88%, var(--color-ink));
+}
+
+.stock-summary-reorder-badge--filter.is-filled:hover {
+  background: color-mix(in srgb, #d97706 26%, var(--color-surface));
+}
+
+.stock-summary-reorder-badge__count {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.app-table tbody tr.app-table-row--reorder td {
+  background: color-mix(in srgb, #d97706 8%, transparent);
+}
+
+.app-table tbody tr.app-table-row--reorder:hover td {
+  background: color-mix(in srgb, #d97706 14%, transparent);
+}
+
+.app-table tbody tr.app-table-row--reorder td:first-child {
+  box-shadow: inset 4px 0 0 color-mix(in srgb, #d97706 90%, transparent);
+}
+
+.app-table-num--reorder {
+  color: color-mix(in srgb, #d97706 88%, var(--color-ink));
+  font-weight: 600;
+}
+
+.report-page__filter-search .default-win-form__control.default-win-form__dropdown-trigger {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--form-control-pad-x);
+  gap: 0.35rem;
+  font-size: var(--form-control-font-size);
+  line-height: var(--form-control-line-height);
+}
+
+.report-page__filter-search .default-win-form__dropdown-chevron {
+  width: 1rem;
+  height: 1rem;
+}
+
+.report-page__filter-list {
+  --ac-item-h: 2.1rem;
+  --ac-gap: 0.15rem;
+  --ac-pad: 0.3rem;
+  border-radius: 0.45rem;
+  font-size: 0.875rem;
+}
+
+.report-page__filter-list .default-win-form__dropdown-option {
+  min-height: var(--ac-item-h);
+  padding: 0 0.65rem;
+  border-radius: 0.4rem;
+  font-size: 0.875rem;
+  line-height: 1.25;
+}
+
+.report-page__monthly-breakup {
+  min-width: 0;
+}
+
+.report-page__checkbox-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.report-page__checkbox-control:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.report-page__checkbox-input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.report-page__checkbox-control:has(input:disabled) .report-page__checkbox-input {
+  cursor: not-allowed;
+}
+
+.report-page__checkbox-text {
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @media (max-width: 48rem) {
   .report-page__toolbar,
   .report-page__toolbar--cols-4 {
@@ -503,6 +701,24 @@
 
 .app-table--sales-report .sales-report-col-qty {
   width: 5.5rem;
+}
+
+.app-table--sales-report .sales-report-col-month {
+  width: 5.75rem;
+}
+
+.app-table-metric-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.12rem;
+  line-height: 1.2;
+}
+
+.app-table-metric-stack__value {
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .app-table--sales-report .sales-report-col-rate {
@@ -759,6 +975,100 @@
 .app-modal-close:hover {
   background: var(--color-surface-hover);
   color: var(--color-ink);
+}
+
+.app-modal-overlay--pdf {
+  z-index: 110;
+  align-items: stretch;
+  padding: 0.75rem;
+}
+
+.app-modal--pdf {
+  width: min(72rem, calc(100vw - 1.5rem));
+  max-width: min(72rem, calc(100vw - 1.5rem));
+  height: min(94vh, calc(100vh - 1.5rem));
+  max-height: min(94vh, calc(100vh - 1.5rem));
+  margin: auto;
+}
+
+.app-modal-title-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-modal-pdf-body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.app-modal-pdf-frame {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 0;
+  background: #fff;
+}
+
+.app-modal-pdf-loading {
+  display: flex;
+  height: 100%;
+  min-height: 12rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+}
+
+.app-modal-pdf-spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 999px;
+  animation: app-modal-pdf-spin 0.7s linear infinite;
+}
+
+@keyframes app-modal-pdf-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.app-modal-pdf-footer {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface-raised);
+  padding: 0.65rem 1rem;
+}
+
+.app-modal-pdf-filename {
+  min-width: 0;
+  flex: 1;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-muted);
+  font-size: 0.75rem;
+}
+
+.app-modal-pdf-actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .settings-shell-card {

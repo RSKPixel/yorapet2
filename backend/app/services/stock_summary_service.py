@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from decimal import Decimal
+
+REORDER_DAYS = 30
 
 from app.models.opening_stock import YorapetOpeningStock
 from app.models.purchase import YorapetPurchase
@@ -44,6 +46,7 @@ class _QtyBucket:
     opening_qty: float = 0.0
     purchase_qty: float = 0.0
     sales_qty: float = 0.0
+    sales_30d_qty: float = 0.0
 
     @property
     def closing_qty(self) -> float:
@@ -111,6 +114,14 @@ class StockSummaryService:
                 if closing_rate is not None
                 else None
             )
+            sales_30d = round(bucket.sales_30d_qty, 2)
+            reorder_level = sales_30d
+            days_cover = (
+                round(closing_qty / (sales_30d / REORDER_DAYS), 1)
+                if sales_30d > 1e-9
+                else None
+            )
+            below_reorder = sales_30d > 1e-9 and closing_qty < sales_30d
             items.append(
                 StockSummaryItem(
                     stock_item=stock_item,
@@ -121,6 +132,10 @@ class StockSummaryService:
                     closing_qty=closing_qty,
                     closing_rate=closing_rate,
                     closing_value=closing_value,
+                    sales_30d_qty=sales_30d,
+                    reorder_level=reorder_level,
+                    days_cover=days_cover,
+                    below_reorder=below_reorder,
                 ),
             )
         items.sort(
@@ -142,6 +157,7 @@ class StockSummaryService:
     ) -> dict[str, _QtyBucket]:
         """As-on snapshot: cumulative opening / purchase / sales through as_on."""
         buckets: dict[str, _QtyBucket] = {}
+        sales_from = as_on - timedelta(days=REORDER_DAYS - 1)
 
         def bucket_for(stock_item: str) -> _QtyBucket:
             item = stock_item.strip()
@@ -168,7 +184,11 @@ class StockSummaryService:
             row_date = _as_date(row.voucher_date)
             if not item or row_date is None or row_date > as_on:
                 continue
-            bucket_for(item).sales_qty += _qty(row.qty)
+            bucket = bucket_for(item)
+            qty = _qty(row.qty)
+            bucket.sales_qty += qty
+            if row_date >= sales_from:
+                bucket.sales_30d_qty += qty
 
         return buckets
 

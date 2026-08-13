@@ -39,6 +39,8 @@
 .default-win-form__dropdown-list,
 .default-win-form__autocomplete,
 .default-win-form__autocomplete-list,
+.default-win-form__multi-select,
+.default-win-form__multi-select-menu,
 .report-page__toolbar {
   --form-bg: var(--color-surface-raised);
   --form-header: var(--color-surface);
@@ -490,7 +492,8 @@
 
 /* Yoradm-style click-to-open dropdown (portaled menu). */
 .default-win-form__autocomplete,
-.default-win-form__dropdown {
+.default-win-form__dropdown,
+.default-win-form__multi-select {
   --ac-item-h: 2.35rem;
   --ac-gap: 0.2rem;
   --ac-pad: 0.35rem;
@@ -618,4 +621,83 @@ button.default-win-form__dropdown-trigger {
   padding: 0.65rem;
   color: var(--form-muted);
   font-size: 0.8125rem;
+}
+
+.default-win-form__multi-select:has(button:disabled) {
+  cursor: not-allowed;
+}
+
+.default-win-form__multi-select-menu {
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--form-line);
+  border-radius: 0.5rem;
+  background: var(--form-input-bg);
+  color: var(--form-ink);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--color-ink) 12%, transparent);
+}
+
+.default-win-form__multi-select-search {
+  flex-shrink: 0;
+  padding: var(--ac-pad);
+  padding-bottom: 0;
+}
+
+.default-win-form__multi-select-search .default-win-form__control {
+  min-height: var(--ac-item-h);
+  padding: 0 0.65rem;
+  font-size: 0.8125rem;
+}
+
+.default-win-form__multi-select-menu .default-win-form__autocomplete-list {
+  margin-top: var(--ac-pad);
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  max-height: calc(var(--ac-pad) * 2 + 6 * var(--ac-item-h) + 5 * var(--ac-gap));
+}
+
+.default-win-form__multi-select-option {
+  gap: 0.55rem;
+}
+
+.default-win-form__multi-select-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  border: 1px solid var(--form-input-line);
+  border-radius: 0.25rem;
+  background: var(--form-input-bg);
+  color: var(--form-on-accent);
+}
+
+.default-win-form__multi-select-check::after {
+  content: "";
+  width: 0.45rem;
+  height: 0.22rem;
+  margin-top: -0.05rem;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg) scale(0);
+  transition: transform 120ms ease;
+}
+
+.default-win-form__multi-select-option.is-selected .default-win-form__multi-select-check {
+  border-color: var(--form-accent);
+  background: var(--form-accent);
+}
+
+.default-win-form__multi-select-option.is-selected .default-win-form__multi-select-check::after {
+  transform: rotate(-45deg) scale(1);
+}
+
+.default-win-form__multi-select.is-empty .default-win-form__dropdown-label {
+  color: var(--form-muted);
+  font-weight: 400;
 }

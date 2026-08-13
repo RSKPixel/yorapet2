@@ -2,6 +2,7 @@ export { FormAutocomplete } from "@/components/forms/FormAutocomplete";
 export type { FormAutocompleteHandle } from "@/components/forms/FormAutocomplete";
 export { FormDropdown } from "@/components/forms/FormDropdown";
 export type { FormDropdownOption } from "@/components/forms/FormDropdown";
+export { FormMultiSelect } from "@/components/forms/FormMultiSelect";
 export { FormInput } from "@/components/forms/FormInput";
 export { FormField, FormPanel } from "@/components/forms/FormPanel";
 export { FormSelect } from "@/components/forms/FormSelect";
