@@ -12,4 +12,6 @@ def test_include_object_excludes_tallydata_tables() -> None:
 
 def test_include_object_allows_application_tables() -> None:
     assert include_object(None, "yorapet_users", "table", False, None) is True
-    assert include_object(None, "yorapet_company_profiles", "table", False, None) is True
+    assert (
+        include_object(None, "yorapet_company_profiles", "table", False, None) is True
+    )

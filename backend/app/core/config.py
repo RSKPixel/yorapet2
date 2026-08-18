@@ -21,6 +21,15 @@ def resolve_env_file() -> Path:
     return BACKEND_ROOT / filename
 
 
+def resolve_env_files() -> tuple[Path, ...]:
+    """Base env file plus optional `.env.local` overrides (gitignored)."""
+    files: list[Path] = [resolve_env_file()]
+    local = BACKEND_ROOT / ".env.local"
+    if local.is_file():
+        files.append(local)
+    return tuple(files)
+
+
 class Settings(BaseSettings):
     """Centralized application settings."""
 
@@ -93,4 +102,4 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     """Return a cached Settings instance loaded from the active env file."""
-    return Settings(_env_file=resolve_env_file())
+    return Settings(_env_file=resolve_env_files())

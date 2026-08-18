@@ -113,13 +113,7 @@ function purchaseLineValue(row: PurchaseLineResponse) {
   return (row.qty ?? 0) * (row.rate ?? 0);
 }
 
-function QtyValueStack({
-  qty,
-  value,
-}: {
-  qty: number;
-  value: number;
-}) {
+function QtyValueStack({ qty, value }: { qty: number; value: number }) {
   return (
     <span className="app-table-metric-stack">
       <span>{qty ? formatNumber(qty) : "—"}</span>
@@ -196,9 +190,7 @@ function summarizePurchases(
     const qty = row.qty ?? 0;
     const value = purchaseLineValue(row);
     const monthIndex =
-      fyStartYear === null
-        ? null
-        : fyMonthIndex(row.voucher_date, fyStartYear);
+      fyStartYear === null ? null : fyMonthIndex(row.voucher_date, fyStartYear);
 
     const existing = groups.get(key);
     if (!existing) {
@@ -323,8 +315,7 @@ function PurchasesTableColgroup({
     );
   }
   if (summaryGroupBy && summaryGroupBy !== "voucher") {
-    const showGroupLabel =
-      summaryGroupBy !== "supplier" || showSupplierColumn;
+    const showGroupLabel = summaryGroupBy !== "supplier" || showSupplierColumn;
     if (showMonthly) {
       return (
         <colgroup>
@@ -386,8 +377,7 @@ export function PurchasesReportPage() {
   const [period, setPeriod] = useState<SalesPeriodKey>("this_month");
   const [customRange, setCustomRange] = useState<DateRange>(defaultCustomRange);
   const [view, setView] = useState<ReportViewKey>("details");
-  const [groupBy, setGroupBy] =
-    useState<PurchaseSummaryGroupByKey>("stock_group");
+  const [groupBy, setGroupBy] = useState<PurchaseSummaryGroupByKey>("stock_group");
   const [monthlyBreakup, setMonthlyBreakup] = useState(false);
   const [supplier, setSupplier] = useState("");
   const [stockItem, setStockItem] = useState("");
@@ -466,12 +456,7 @@ export function PurchasesReportPage() {
   }, [purchasesQuery.data, compareRange]);
 
   const supplierOptions = useMemo(
-    () =>
-      uniqueSortedOptions(
-        periodRows,
-        (row) => row.ledger_name,
-        "All suppliers",
-      ),
+    () => uniqueSortedOptions(periodRows, (row) => row.ledger_name, "All suppliers"),
     [periodRows],
   );
 
@@ -494,19 +479,13 @@ export function PurchasesReportPage() {
   const stockItemOptions = useMemo(() => {
     const scoped = stockGroup
       ? periodRows.filter(
-          (row) =>
-            resolveStockGroup(row.stock_item, stockGroupByItem) === stockGroup,
+          (row) => resolveStockGroup(row.stock_item, stockGroupByItem) === stockGroup,
         )
       : periodRows;
-    return uniqueSortedOptions(
-      scoped,
-      (row) => row.stock_item,
-      "All stock items",
-    );
+    return uniqueSortedOptions(scoped, (row) => row.stock_item, "All stock items");
   }, [periodRows, stockGroup, stockGroupByItem]);
 
-  const isSummary =
-    view === "summary" || view === "summary_previous_period";
+  const isSummary = view === "summary" || view === "summary_previous_period";
   const showCompare = view === "summary_previous_period" && !monthlyBreakup;
   const showMonthly =
     monthlyBreakup && isFyPeriod && isSummary && groupBy !== "voucher";
@@ -572,10 +551,7 @@ export function PurchasesReportPage() {
   }, [supplierFilterEnabled, stockGroupFilterEnabled, stockItemFilterEnabled]);
 
   useEffect(() => {
-    if (
-      supplier &&
-      !supplierOptions.some((option) => option.value === supplier)
-    ) {
+    if (supplier && !supplierOptions.some((option) => option.value === supplier)) {
       setSupplier("");
     }
   }, [supplier, supplierOptions]);
@@ -590,10 +566,7 @@ export function PurchasesReportPage() {
   }, [stockGroup, stockGroupOptions]);
 
   useEffect(() => {
-    if (
-      stockItem &&
-      !stockItemOptions.some((option) => option.value === stockItem)
-    ) {
+    if (stockItem && !stockItemOptions.some((option) => option.value === stockItem)) {
       setStockItem("");
     }
   }, [stockItem, stockItemOptions]);
@@ -687,8 +660,7 @@ export function PurchasesReportPage() {
 
       return {
         row,
-        showVoucherHeader:
-          (linesByVoucher.get(key) ?? 0) <= 1 || isFirstInVoucher,
+        showVoucherHeader: (linesByVoucher.get(key) ?? 0) <= 1 || isFirstInVoucher,
       };
     });
   }, [filteredRows]);
@@ -702,27 +674,14 @@ export function PurchasesReportPage() {
     if (!compareRange || !showCompare) {
       return [] as PurchaseSummaryRow[];
     }
-    return summarizePurchases(
-      filteredCompareRows,
-      groupBy,
-      stockGroupByItem,
-      null,
-    );
-  }, [
-    compareRange,
-    showCompare,
-    filteredCompareRows,
-    groupBy,
-    stockGroupByItem,
-  ]);
+    return summarizePurchases(filteredCompareRows, groupBy, stockGroupByItem, null);
+  }, [compareRange, showCompare, filteredCompareRows, groupBy, stockGroupByItem]);
 
   const mergedSummaryRows = useMemo(() => {
     if (!isSummary) {
       return [] as Array<PurchaseSummaryRow & { compareQty: number }>;
     }
-    const compareByKey = new Map(
-      compareSummaryRows.map((row) => [row.key, row]),
-    );
+    const compareByKey = new Map(compareSummaryRows.map((row) => [row.key, row]));
     const currentByKey = new Map(summaryRows.map((row) => [row.key, row]));
     const keys = new Set<string>([
       ...currentByKey.keys(),
@@ -764,11 +723,9 @@ export function PurchasesReportPage() {
         if (groupCmp !== 0) {
           return groupCmp;
         }
-        return (a.ledger_name || "—").localeCompare(
-          b.ledger_name || "—",
-          undefined,
-          { sensitivity: "base" },
-        );
+        return (a.ledger_name || "—").localeCompare(b.ledger_name || "—", undefined, {
+          sensitivity: "base",
+        });
       });
     }
     return merged.sort((a, b) =>
@@ -783,9 +740,7 @@ export function PurchasesReportPage() {
   /** Hide Supplier/Vendor column when a specific supplier is filtered. */
   const showSupplierColumn = !supplier;
   const showGroupLabelColumn =
-    !isGroupedSummary ||
-    groupBy !== "supplier" ||
-    showSupplierColumn;
+    !isGroupedSummary || groupBy !== "supplier" || showSupplierColumn;
   const labelColCount = isGroupVendorSummary
     ? 1 + (showSupplierColumn ? 1 : 0)
     : isGroupedSummary
@@ -836,8 +791,7 @@ export function PurchasesReportPage() {
     return totals;
   }, [showMonthly, visibleMonths, mergedSummaryRows]);
 
-  const filtersDisabled =
-    purchasesQuery.isLoading || inventoryQuery.isLoading;
+  const filtersDisabled = purchasesQuery.isLoading || inventoryQuery.isLoading;
 
   const footLabel = purchasesQuery.isLoading
     ? "Loading…"
@@ -887,15 +841,13 @@ export function PurchasesReportPage() {
       }
 
       const periodLabel =
-        SALES_PERIOD_OPTIONS.find((option) => option.value === period)?.label ??
-        period;
+        SALES_PERIOD_OPTIONS.find((option) => option.value === period)?.label ?? period;
       const viewLabel =
-        SALES_REPORT_VIEW_OPTIONS.find((option) => option.value === view)
-          ?.label ?? view;
+        SALES_REPORT_VIEW_OPTIONS.find((option) => option.value === view)?.label ??
+        view;
       const groupByLabel = isSummary
-        ? (PURCHASE_SUMMARY_GROUP_BY_OPTIONS.find(
-            (option) => option.value === groupBy,
-          )?.label ?? groupBy)
+        ? (PURCHASE_SUMMARY_GROUP_BY_OPTIONS.find((option) => option.value === groupBy)
+            ?.label ?? groupBy)
         : null;
 
       let head: string[] = [];
@@ -1144,9 +1096,7 @@ export function PurchasesReportPage() {
               listClassName="report-page__period-list"
               options={PURCHASE_SUMMARY_GROUP_BY_OPTIONS}
               value={groupBy}
-              onChange={(value) =>
-                setGroupBy(value as PurchaseSummaryGroupByKey)
-              }
+              onChange={(value) => setGroupBy(value as PurchaseSummaryGroupByKey)}
               disabled={filtersDisabled}
             />
           </FormField>
@@ -1216,10 +1166,7 @@ export function PurchasesReportPage() {
           type="button"
           className="default-win-form__button"
           disabled={
-            exportingPdf ||
-            filtersDisabled ||
-            purchasesQuery.isError ||
-            rowCount === 0
+            exportingPdf || filtersDisabled || purchasesQuery.isError || rowCount === 0
           }
           onClick={() => void handleExportPdf()}
         >
@@ -1256,17 +1203,12 @@ export function PurchasesReportPage() {
             ]
               .filter(Boolean)
               .join(" ")}
-            onScroll={
-              showMonthly ? () => syncHorizontalScroll("body") : undefined
-            }
+            onScroll={showMonthly ? () => syncHorizontalScroll("body") : undefined}
           >
             {purchasesQuery.isLoading || inventoryQuery.isLoading ? (
               <p className="app-table-empty">Loading purchases…</p>
             ) : purchasesQuery.isError ? (
-              <p
-                className="app-table-empty text-[var(--color-danger)]"
-                role="alert"
-              >
+              <p className="app-table-empty text-[var(--color-danger)]" role="alert">
                 {(purchasesQuery.error as Error).message}
               </p>
             ) : (
@@ -1298,9 +1240,7 @@ export function PurchasesReportPage() {
                       <th className="app-table-num">
                         <span className="app-table-metric-stack">
                           <span>{showMonthly ? "Total" : "Qty"}</span>
-                          <span className="app-table-metric-stack__value">
-                            Value
-                          </span>
+                          <span className="app-table-metric-stack__value">Value</span>
                         </span>
                       </th>
                       {showCompare ? (
@@ -1309,9 +1249,7 @@ export function PurchasesReportPage() {
                     </tr>
                   ) : isGroupedSummary ? (
                     <tr>
-                      {showGroupLabelColumn ? (
-                        <th>{groupColumnLabel}</th>
-                      ) : null}
+                      {showGroupLabelColumn ? <th>{groupColumnLabel}</th> : null}
                       {visibleMonths.map((label) => (
                         <th key={label} className="app-table-num">
                           {label}
@@ -1320,9 +1258,7 @@ export function PurchasesReportPage() {
                       <th className="app-table-num">
                         <span className="app-table-metric-stack">
                           <span>{showMonthly ? "Total" : "Qty"}</span>
-                          <span className="app-table-metric-stack__value">
-                            Value
-                          </span>
+                          <span className="app-table-metric-stack__value">Value</span>
                         </span>
                       </th>
                       {showCompare ? (
@@ -1454,9 +1390,7 @@ export function PurchasesReportPage() {
                     displayRows.map(({ row, showVoucherHeader }) => (
                       <tr key={row.id}>
                         <td>{formatDate(row.voucher_date)}</td>
-                        <td>
-                          {showVoucherHeader ? formatText(row.voucher_no) : ""}
-                        </td>
+                        <td>{showVoucherHeader ? formatText(row.voucher_no) : ""}</td>
                         {showSupplierColumn ? (
                           <td
                             title={
@@ -1465,20 +1399,14 @@ export function PurchasesReportPage() {
                                 : undefined
                             }
                           >
-                            {showVoucherHeader
-                              ? formatText(row.ledger_name)
-                              : ""}
+                            {showVoucherHeader ? formatText(row.ledger_name) : ""}
                           </td>
                         ) : null}
                         <td title={row.stock_item?.trim() || undefined}>
                           {formatText(row.stock_item)}
                         </td>
-                        <td className="app-table-num">
-                          {formatNumber(row.qty)}
-                        </td>
-                        <td className="app-table-num">
-                          {formatRate(row.rate)}
-                        </td>
+                        <td className="app-table-num">{formatNumber(row.qty)}</td>
+                        <td className="app-table-num">{formatRate(row.rate)}</td>
                       </tr>
                     ))
                   )}
@@ -1495,9 +1423,7 @@ export function PurchasesReportPage() {
             ]
               .filter(Boolean)
               .join(" ")}
-            onScroll={
-              showMonthly ? () => syncHorizontalScroll("foot") : undefined
-            }
+            onScroll={showMonthly ? () => syncHorizontalScroll("foot") : undefined}
           >
             <table
               className={[
@@ -1523,10 +1449,7 @@ export function PurchasesReportPage() {
                   ) : null}
                   {showMonthly
                     ? totalMonthQtys.map((qty, index) => (
-                        <td
-                          key={visibleMonths[index]}
-                          className="app-table-num"
-                        >
+                        <td key={visibleMonths[index]} className="app-table-num">
                           {!purchasesQuery.isLoading && !purchasesQuery.isError ? (
                             <QtyValueStack
                               qty={qty}
@@ -1542,14 +1465,10 @@ export function PurchasesReportPage() {
                     {!purchasesQuery.isLoading && !purchasesQuery.isError ? (
                       labelColCount === 0 ? (
                         <span className="app-table-metric-stack">
-                          <span className="app-table-foot-label">
-                            {footLabel}
-                          </span>
+                          <span className="app-table-foot-label">{footLabel}</span>
                           {isGroupedSummary || isSummary ? (
                             <>
-                              <span>
-                                {totalQty ? formatNumber(totalQty) : "—"}
-                              </span>
+                              <span>{totalQty ? formatNumber(totalQty) : "—"}</span>
                               <span className="app-table-metric-stack__value">
                                 {totalValue ? formatRate(totalValue) : "—"}
                               </span>

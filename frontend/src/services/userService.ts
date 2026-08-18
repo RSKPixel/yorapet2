@@ -35,17 +35,11 @@ export const userService = {
   },
 
   async createUser(payload: CreateUserRequest): Promise<ManagedUser> {
-    const { data } = await apiClient.post<ManagedUserResponse>(
-      "/users",
-      payload,
-    );
+    const { data } = await apiClient.post<ManagedUserResponse>("/users", payload);
     return mapUser(data);
   },
 
-  async updateUser(
-    userId: number,
-    payload: UpdateUserRequest,
-  ): Promise<ManagedUser> {
+  async updateUser(userId: number, payload: UpdateUserRequest): Promise<ManagedUser> {
     const { data } = await apiClient.patch<ManagedUserResponse>(
       `/users/${userId}`,
       payload,

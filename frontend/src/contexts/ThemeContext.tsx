@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { ThemeContext } from "@/contexts/themeContextInstance";
 import type { ThemeMode } from "@/contexts/themeTypes";
@@ -65,8 +59,8 @@ function applyTheme(theme: ThemeMode, rootFontSizeIncrement: number) {
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<ThemeMode>(() => readStoredTheme());
-  const [rootFontSizeIncrement, setRootFontSizeIncrementState] = useState<number>(
-    () => readStoredRootFontSizeIncrement(),
+  const [rootFontSizeIncrement, setRootFontSizeIncrementState] = useState<number>(() =>
+    readStoredRootFontSizeIncrement(),
   );
 
   useEffect(() => {
@@ -100,7 +94,5 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     [rootFontSizeIncrement, setRootFontSizeIncrement, setTheme, theme],
   );
 
-  return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }

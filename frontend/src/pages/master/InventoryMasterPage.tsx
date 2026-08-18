@@ -160,9 +160,8 @@ export function InventoryMasterPage() {
   const saveMutation = useMutation({
     mutationFn: inventoryMasterService.upsertExtra,
     onSuccess: (updated) => {
-      queryClient.setQueryData<InventoryMasterItem[]>(
-        ["inventory-master"],
-        (current) => patchInventoryCache(current, updated),
+      queryClient.setQueryData<InventoryMasterItem[]>(["inventory-master"], (current) =>
+        patchInventoryCache(current, updated),
       );
       showSuccess("Inventory details saved.");
     },
@@ -175,9 +174,8 @@ export function InventoryMasterPage() {
     mutationFn: ({ stockItem, file }: { stockItem: string; file: File }) =>
       inventoryMasterService.uploadImage(stockItem, file),
     onSuccess: (updated) => {
-      queryClient.setQueryData<InventoryMasterItem[]>(
-        ["inventory-master"],
-        (current) => patchInventoryCache(current, updated),
+      queryClient.setQueryData<InventoryMasterItem[]>(["inventory-master"], (current) =>
+        patchInventoryCache(current, updated),
       );
       setCarouselIndex(Math.max(0, updated.images.length - 1));
       showSuccess("Image uploaded.");
@@ -193,9 +191,8 @@ export function InventoryMasterPage() {
   const deleteImageMutation = useMutation({
     mutationFn: inventoryMasterService.deleteImage,
     onSuccess: (updated) => {
-      queryClient.setQueryData<InventoryMasterItem[]>(
-        ["inventory-master"],
-        (current) => patchInventoryCache(current, updated),
+      queryClient.setQueryData<InventoryMasterItem[]>(["inventory-master"], (current) =>
+        patchInventoryCache(current, updated),
       );
       showSuccess("Image removed.");
     },
@@ -211,10 +208,7 @@ export function InventoryMasterPage() {
   return (
     <section>
       <PageHeader
-        items={[
-          { label: "Master" },
-          { label: "Inventory", to: "/master/inventory" },
-        ]}
+        items={[{ label: "Master" }, { label: "Inventory", to: "/master/inventory" }]}
       />
 
       <FormPanel
@@ -235,18 +229,12 @@ export function InventoryMasterPage() {
             setFieldError(neck.message);
             return;
           }
-          const qtyPerBox = parseOptionalNumber(
-            values.qty_per_box,
-            "Qty per box",
-          );
+          const qtyPerBox = parseOptionalNumber(values.qty_per_box, "Qty per box");
           if (!qtyPerBox.ok) {
             setFieldError(qtyPerBox.message);
             return;
           }
-          const reorder = parseOptionalNumber(
-            values.reorder_level,
-            "Reorder level",
-          );
+          const reorder = parseOptionalNumber(values.reorder_level, "Reorder level");
           if (!reorder.ok) {
             setFieldError(reorder.message);
             return;
@@ -266,9 +254,7 @@ export function InventoryMasterPage() {
           <button
             type="submit"
             className={defaultWinForm.buttonPrimary}
-            disabled={
-              fieldsDisabled || isSubmitting || saveMutation.isPending
-            }
+            disabled={fieldsDisabled || isSubmitting || saveMutation.isPending}
           >
             {saveMutation.isPending ? "Saving…" : "Save details"}
           </button>
@@ -316,8 +302,7 @@ export function InventoryMasterPage() {
                     aria-label="Previous image"
                     onClick={() =>
                       setCarouselIndex(
-                        (index) =>
-                          (index - 1 + images.length) % images.length,
+                        (index) => (index - 1 + images.length) % images.length,
                       )
                     }
                   >

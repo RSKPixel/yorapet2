@@ -60,10 +60,7 @@ export function PdfPreviewModal({
       >
         <div className="app-modal-header">
           <h1 id="pdf-preview-title" className="app-modal-title">
-            <DocumentTextIcon
-              className="app-modal-title-icon"
-              aria-hidden="true"
-            />
+            <DocumentTextIcon className="app-modal-title-icon" aria-hidden="true" />
             <span className="app-modal-title-text">{title}</span>
           </h1>
           <button
@@ -94,11 +91,7 @@ export function PdfPreviewModal({
               <span>Generating PDF preview…</span>
             </div>
           ) : (
-            <iframe
-              src={pdfUrl}
-              title={title}
-              className="app-modal-pdf-frame"
-            />
+            <iframe src={pdfUrl} title={title} className="app-modal-pdf-frame" />
           )}
         </div>
 

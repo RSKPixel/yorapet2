@@ -204,10 +204,7 @@ export function FormDropdown({
           <ul
             id={listId}
             ref={listRef}
-            className={[
-              "default-win-form__dropdown-list",
-              listClassName,
-            ]
+            className={["default-win-form__dropdown-list", listClassName]
               .filter(Boolean)
               .join(" ")}
             role="listbox"
@@ -220,7 +217,11 @@ export function FormDropdown({
                 const active = index === highlight;
                 const selectedOption = String(option.value) === String(value);
                 return (
-                  <li key={String(option.value)} role="option" aria-selected={selectedOption}>
+                  <li
+                    key={String(option.value)}
+                    role="option"
+                    aria-selected={selectedOption}
+                  >
                     <button
                       type="button"
                       data-active={active ? "true" : undefined}
@@ -272,10 +273,7 @@ export function FormDropdown({
       >
         <span className="default-win-form__dropdown-label">{label}</span>
         <ChevronDownIcon
-          className={[
-            "default-win-form__dropdown-chevron",
-            open ? "is-open" : "",
-          ]
+          className={["default-win-form__dropdown-chevron", open ? "is-open" : ""]
             .filter(Boolean)
             .join(" ")}
           aria-hidden="true"

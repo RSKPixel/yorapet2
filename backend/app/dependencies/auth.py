@@ -16,7 +16,23 @@ ACCESS_COOKIE_NAME = "yorapet_access"
 REFRESH_COOKIE_NAME = "yorapet_refresh"
 
 
-async def resolve_user_from_cookie(
+def extract_bearer_token(request: Request) -> str | None:
+    """Return the Bearer token from Authorization, if present."""
+    header = request.headers.get("Authorization")
+    if not header:
+        return None
+    scheme, _, value = header.partition(" ")
+    if scheme.lower() != "bearer" or not value.strip():
+        return None
+    return value.strip()
+
+
+def uses_bearer_auth(request: Request) -> bool:
+    """True when the request authenticated (or intends to) via Bearer."""
+    return extract_bearer_token(request) is not None
+
+
+async def resolve_user_from_token(
     request: Request,
     session: DbSessionDep,
     settings: SettingsDep,
@@ -24,8 +40,10 @@ async def resolve_user_from_cookie(
     cookie_name: str,
     token_type: TokenType,
 ) -> User:
-    """Resolve and validate a user from an HTTP-only JWT cookie."""
-    token = request.cookies.get(cookie_name)
+    """Resolve and validate a user from a Bearer token or HTTP-only JWT cookie."""
+    token = extract_bearer_token(request)
+    if token is None:
+        token = request.cookies.get(cookie_name)
     if not token:
         raise AuthenticationError()
 
@@ -35,11 +53,7 @@ async def resolve_user_from_cookie(
         settings=settings,
     )
     user = await UserRepository(session).get_by_id(user_id)
-    if (
-        user is None
-        or not user.is_active
-        or user.auth_version != auth_version
-    ):
+    if user is None or not user.is_active or user.auth_version != auth_version:
         raise AuthenticationError("Invalid authentication session")
     return user
 
@@ -49,8 +63,8 @@ async def get_current_user(
     session: DbSessionDep,
     settings: SettingsDep,
 ) -> User:
-    """Require a valid access-token cookie."""
-    return await resolve_user_from_cookie(
+    """Require a valid access token (Bearer header or cookie)."""
+    return await resolve_user_from_token(
         request,
         session,
         settings,
@@ -71,8 +85,8 @@ async def get_refresh_user(
     session: DbSessionDep,
     settings: SettingsDep,
 ) -> User:
-    """Require a valid refresh-token cookie."""
-    return await resolve_user_from_cookie(
+    """Require a valid refresh token (Bearer header or cookie)."""
+    return await resolve_user_from_token(
         request,
         session,
         settings,

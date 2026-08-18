@@ -1,9 +1,4 @@
-import {
-  useEffect,
-  type ComponentType,
-  type ReactNode,
-  type SVGProps,
-} from "react";
+import { useEffect, type ComponentType, type ReactNode, type SVGProps } from "react";
 import { createPortal } from "react-dom";
 
 type ModalProps = {

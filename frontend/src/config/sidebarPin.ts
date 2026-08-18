@@ -8,8 +8,5 @@ export function readSidebarPinned(): boolean {
 }
 
 export function writeSidebarPinned(pinned: boolean): void {
-  window.localStorage.setItem(
-    SIDEBAR_PIN_STORAGE_KEY,
-    pinned ? "true" : "false",
-  );
+  window.localStorage.setItem(SIDEBAR_PIN_STORAGE_KEY, pinned ? "true" : "false");
 }

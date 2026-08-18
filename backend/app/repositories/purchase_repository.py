@@ -126,6 +126,28 @@ class PurchaseRepository:
             items.append(name)
         return sorted(items, key=str.casefold)
 
+    async def list_recent_by_stock_item(
+        self,
+        stock_item: str,
+        *,
+        limit: int = 15,
+    ) -> list[YorapetPurchase]:
+        """Newest purchase lines for one stock item (by voucher date)."""
+        item = stock_item.strip()
+        if not item or limit <= 0:
+            return []
+        result = await self._session.execute(
+            select(YorapetPurchase)
+            .where(YorapetPurchase.stock_item == item)
+            .order_by(
+                YorapetPurchase.voucher_date.desc(),
+                YorapetPurchase.voucher_no.desc(),
+                YorapetPurchase.id.desc(),
+            )
+            .limit(limit),
+        )
+        return list(result.scalars().all())
+
     def add(self, purchase: YorapetPurchase) -> None:
         self._session.add(purchase)
 

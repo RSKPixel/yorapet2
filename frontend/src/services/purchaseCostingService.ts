@@ -91,10 +91,7 @@ export const purchaseCostingService = {
     return data;
   },
 
-  async preview(
-    voucherNo: string,
-    voucherDate: string,
-  ): Promise<PurchaseCostPreview> {
+  async preview(voucherNo: string, voucherDate: string): Promise<PurchaseCostPreview> {
     const { data } = await apiClient.get<PurchaseCostPreview>(
       "/purchase-costing/preview",
       {

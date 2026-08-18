@@ -7,7 +7,6 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
 import pytest
-
 from app.services.tally_sync_key import purchase_sync_key, sale_sync_key
 from app.services.tally_sync_service import TallySyncService, _PurchaseSnapshot
 
@@ -315,7 +314,9 @@ async def test_sync_update_replaces_matching_voucher_lines() -> None:
     assert result.steps[0].added == 0
     assert result.steps[0].updated == 1
     assert result.steps[0].removed == 0
-    purchases_repo.delete_by_sync_keys.assert_awaited_once_with([existing_line.sync_key])
+    purchases_repo.delete_by_sync_keys.assert_awaited_once_with(
+        [existing_line.sync_key]
+    )
     assert len(added) == 1
     assert added[0].amount == 2500.0
     assert float(added[0].cost_value) == 2500.0

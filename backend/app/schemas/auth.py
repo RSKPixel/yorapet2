@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from datetime import UTC, datetime
+from typing import Literal
 
 from pydantic import (
     BaseModel,
@@ -16,12 +17,15 @@ from pydantic import (
 _EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 _PHONE_PATTERN = re.compile(r"^[0-9+\-\s().]{7,32}$")
 
+AuthTokenDelivery = Literal["cookie", "bearer"]
+
 
 class LoginRequest(BaseModel):
     """Credentials accepted by the login endpoint."""
 
     username: str = Field(min_length=3, max_length=100)
     password: str = Field(min_length=1, max_length=1024)
+    delivery: AuthTokenDelivery = "cookie"
 
     @field_validator("username")
     @classmethod
@@ -96,6 +100,13 @@ class UserResponse(BaseModel):
 
 
 class AuthResponse(BaseModel):
-    """Successful authentication response."""
+    """Successful authentication response.
+
+    Cookie clients omit tokens (HTTP-only cookies carry the session).
+    Bearer clients receive access_token and refresh_token in the body.
+    """
 
     user: UserResponse
+    access_token: str | None = None
+    refresh_token: str | None = None
+    token_type: Literal["bearer"] | None = None

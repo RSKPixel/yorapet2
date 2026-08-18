@@ -7,9 +7,8 @@ import type {
 
 export const inventoryMasterService = {
   async list(): Promise<InventoryMasterItem[]> {
-    const { data } = await apiClient.get<InventoryMasterListResponse>(
-      "/inventory-master",
-    );
+    const { data } =
+      await apiClient.get<InventoryMasterListResponse>("/inventory-master");
     return data.items;
   },
 
@@ -23,10 +22,7 @@ export const inventoryMasterService = {
     return data;
   },
 
-  async uploadImage(
-    stockItem: string,
-    file: File,
-  ): Promise<InventoryMasterItem> {
+  async uploadImage(stockItem: string, file: File): Promise<InventoryMasterItem> {
     const formData = new FormData();
     formData.append("stock_item", stockItem);
     formData.append("file", file);

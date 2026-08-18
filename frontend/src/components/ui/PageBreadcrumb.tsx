@@ -30,19 +30,13 @@ function BreadcrumbChevron() {
   );
 }
 
-export function PageBreadcrumb({
-  items,
-  className = "",
-}: PageBreadcrumbProps) {
+export function PageBreadcrumb({ items, className = "" }: PageBreadcrumbProps) {
   if (!items.length) {
     return null;
   }
 
   return (
-    <nav
-      className={`page-breadcrumb ${className}`.trim()}
-      aria-label="Breadcrumb"
-    >
+    <nav className={`page-breadcrumb ${className}`.trim()} aria-label="Breadcrumb">
       <ol className="page-breadcrumb__list">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
@@ -55,10 +49,7 @@ export function PageBreadcrumb({
               ) : null}
               <li className="page-breadcrumb__item">
                 {isLast ? (
-                  <span
-                    className="page-breadcrumb__current"
-                    aria-current="page"
-                  >
+                  <span className="page-breadcrumb__current" aria-current="page">
                     {item.label}
                   </span>
                 ) : item.to ? (

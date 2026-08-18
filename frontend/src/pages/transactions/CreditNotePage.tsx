@@ -32,10 +32,7 @@ export function CreditNotePage() {
   const [stockItem, setStockItem] = useState("");
   const [fieldError, setFieldError] = useState<string | undefined>();
 
-  const selected = useMemo(
-    () => decodeVoucherValue(voucherValue),
-    [voucherValue],
-  );
+  const selected = useMemo(() => decodeVoucherValue(voucherValue), [voucherValue]);
   const voucherNo = selected.voucher_no;
   const voucherDate = selected.voucher_date;
 
@@ -46,19 +43,12 @@ export function CreditNotePage() {
 
   const stockItemsQuery = useQuery({
     queryKey: ["purchase-costing", "stock-items", voucherNo, voucherDate],
-    queryFn: () =>
-      purchaseCostingService.listStockItems(voucherNo, voucherDate),
+    queryFn: () => purchaseCostingService.listStockItems(voucherNo, voucherDate),
     enabled: Boolean(voucherNo && voucherDate),
   });
 
   const creditQuery = useQuery({
-    queryKey: [
-      "purchase-costing",
-      "credit-note",
-      voucherNo,
-      voucherDate,
-      stockItem,
-    ],
+    queryKey: ["purchase-costing", "credit-note", voucherNo, voucherDate, stockItem],
     queryFn: () =>
       purchaseCostingService.getCreditNote(voucherNo, voucherDate, stockItem),
     enabled: Boolean(voucherNo && voucherDate && stockItem),
@@ -83,10 +73,7 @@ export function CreditNotePage() {
   }, [voucherValue]);
 
   useEffect(() => {
-    if (
-      stockItem &&
-      !stockItemOptions.some((option) => option.value === stockItem)
-    ) {
+    if (stockItem && !stockItemOptions.some((option) => option.value === stockItem)) {
       setStockItem("");
     }
   }, [stockItem, stockItemOptions]);
@@ -109,8 +96,7 @@ export function CreditNotePage() {
     }
     const credit = creditQuery.data?.credit_note;
     reset({
-      credit_note:
-        credit === null || credit === undefined ? "" : String(credit),
+      credit_note: credit === null || credit === undefined ? "" : String(credit),
     });
   }, [voucherNo, voucherDate, stockItem, creditQuery.data, reset]);
 

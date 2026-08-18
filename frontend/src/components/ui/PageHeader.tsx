@@ -1,7 +1,4 @@
-import {
-  PageBreadcrumb,
-  type BreadcrumbItem,
-} from "@/components/ui/PageBreadcrumb";
+import { PageBreadcrumb, type BreadcrumbItem } from "@/components/ui/PageBreadcrumb";
 
 type PageHeaderProps = {
   items: BreadcrumbItem[];

@@ -130,14 +130,7 @@ function buildPurchasesReportPdf(
     y = addMetaLine(doc, "Group by", meta.groupByLabel, MARGIN, y, contentWidth);
   }
   if (meta.monthlyBreakup) {
-    y = addMetaLine(
-      doc,
-      "Breakup",
-      "Monthly (qty / value)",
-      MARGIN,
-      y,
-      contentWidth,
-    );
+    y = addMetaLine(doc, "Breakup", "Monthly (qty / value)", MARGIN, y, contentWidth);
   }
   if (meta.supplier) {
     y = addMetaLine(doc, "Supplier", meta.supplier, MARGIN, y, contentWidth);
@@ -192,12 +185,9 @@ function buildPurchasesReportPdf(
       doc.setFont("helvetica", "normal");
       doc.setFontSize(8);
       doc.setTextColor(120, 120, 120);
-      doc.text(
-        `Page ${data.pageNumber} of ${pageCount}`,
-        pageWidth / 2,
-        footerY,
-        { align: "center" },
-      );
+      doc.text(`Page ${data.pageNumber} of ${pageCount}`, pageWidth / 2, footerY, {
+        align: "center",
+      });
       doc.setTextColor(0, 0, 0);
     },
   });

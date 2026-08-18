@@ -24,9 +24,7 @@ async function refreshSession(): Promise<boolean> {
 
 function getErrorMessage(error: AxiosError<ApiErrorResponse>): string {
   return (
-    error.response?.data?.error?.message ||
-    error.message ||
-    "Unexpected API error"
+    error.response?.data?.error?.message || error.message || "Unexpected API error"
   );
 }
 

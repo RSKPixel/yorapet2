@@ -318,23 +318,16 @@ export function SalesReportPage() {
   const stockItemOptions = useMemo(() => {
     const scoped = stockGroup
       ? periodRows.filter(
-          (row) =>
-            resolveStockGroup(row.stock_item, stockGroupByItem) === stockGroup,
+          (row) => resolveStockGroup(row.stock_item, stockGroupByItem) === stockGroup,
         )
       : periodRows;
-    return uniqueSortedOptions(
-      scoped,
-      (row) => row.stock_item,
-      "All stock items",
-    );
+    return uniqueSortedOptions(scoped, (row) => row.stock_item, "All stock items");
   }, [periodRows, stockGroup, stockGroupByItem]);
 
-  const isSummary =
-    view === "summary" || view === "summary_previous_period";
+  const isSummary = view === "summary" || view === "summary_previous_period";
   const showCompare = view === "summary_previous_period";
   // In summary, only the filter matching Group by stays enabled (all enabled for voucher / details).
-  const buyerFilterEnabled =
-    !isSummary || groupBy === "voucher" || groupBy === "buyer";
+  const buyerFilterEnabled = !isSummary || groupBy === "voucher" || groupBy === "buyer";
   const stockGroupFilterEnabled =
     !isSummary || groupBy === "voucher" || groupBy === "stock_group";
   const stockItemFilterEnabled =
@@ -374,10 +367,7 @@ export function SalesReportPage() {
   }, [stockGroup, stockGroupOptions]);
 
   useEffect(() => {
-    if (
-      stockItem &&
-      !stockItemOptions.some((option) => option.value === stockItem)
-    ) {
+    if (stockItem && !stockItemOptions.some((option) => option.value === stockItem)) {
       setStockItem("");
     }
   }, [stockItem, stockItemOptions]);
@@ -385,11 +375,7 @@ export function SalesReportPage() {
   const filteredRows = useMemo(
     () =>
       periodRows.filter((row) => {
-        if (
-          buyerFilterEnabled &&
-          buyer &&
-          (row.ledger_name?.trim() ?? "") !== buyer
-        ) {
+        if (buyerFilterEnabled && buyer && (row.ledger_name?.trim() ?? "") !== buyer) {
           return false;
         }
         if (stockGroupFilterEnabled && stockGroup) {
@@ -424,11 +410,7 @@ export function SalesReportPage() {
       return [] as SaleLineResponse[];
     }
     return comparePeriodRows.filter((row) => {
-      if (
-        buyerFilterEnabled &&
-        buyer &&
-        (row.ledger_name?.trim() ?? "") !== buyer
-      ) {
+      if (buyerFilterEnabled && buyer && (row.ledger_name?.trim() ?? "") !== buyer) {
         return false;
       }
       if (stockGroupFilterEnabled && stockGroup) {
@@ -471,8 +453,7 @@ export function SalesReportPage() {
 
       return {
         row,
-        showVoucherHeader:
-          (linesByVoucher.get(key) ?? 0) <= 1 || isFirstInVoucher,
+        showVoucherHeader: (linesByVoucher.get(key) ?? 0) <= 1 || isFirstInVoucher,
       };
     });
   }, [filteredRows]);
@@ -487,21 +468,13 @@ export function SalesReportPage() {
       return [] as SaleSummaryRow[];
     }
     return summarizeSales(filteredCompareRows, groupBy, stockGroupByItem);
-  }, [
-    compareRange,
-    showCompare,
-    filteredCompareRows,
-    groupBy,
-    stockGroupByItem,
-  ]);
+  }, [compareRange, showCompare, filteredCompareRows, groupBy, stockGroupByItem]);
 
   const mergedSummaryRows = useMemo(() => {
     if (!isSummary) {
       return [] as Array<SaleSummaryRow & { compareQty: number }>;
     }
-    const compareByKey = new Map(
-      compareSummaryRows.map((row) => [row.key, row]),
-    );
+    const compareByKey = new Map(compareSummaryRows.map((row) => [row.key, row]));
     const currentByKey = new Map(summaryRows.map((row) => [row.key, row]));
     const keys = new Set<string>([
       ...currentByKey.keys(),
@@ -581,9 +554,7 @@ export function SalesReportPage() {
       <div
         className={[
           "report-page__toolbar mt-1",
-          isSummary && groupBy !== "voucher"
-            ? "report-page__toolbar--cols-4"
-            : null,
+          isSummary && groupBy !== "voucher" ? "report-page__toolbar--cols-4" : null,
         ]
           .filter(Boolean)
           .join(" ")}
@@ -645,9 +616,7 @@ export function SalesReportPage() {
               listClassName="report-page__period-list"
               options={SALES_SUMMARY_GROUP_BY_OPTIONS}
               value={groupBy}
-              onChange={(value) =>
-                setGroupBy(value as SalesSummaryGroupByKey)
-              }
+              onChange={(value) => setGroupBy(value as SalesSummaryGroupByKey)}
               disabled={filtersDisabled}
             />
           </FormField>
@@ -696,10 +665,7 @@ export function SalesReportPage() {
             {salesQuery.isLoading || inventoryQuery.isLoading ? (
               <p className="app-table-empty">Loading sales…</p>
             ) : salesQuery.isError ? (
-              <p
-                className="app-table-empty text-[var(--color-danger)]"
-                role="alert"
-              >
+              <p className="app-table-empty text-[var(--color-danger)]" role="alert">
                 {(salesQuery.error as Error).message}
               </p>
             ) : (
@@ -738,13 +704,7 @@ export function SalesReportPage() {
                     <tr>
                       <td
                         colSpan={
-                          isGroupedSummary
-                            ? showCompare
-                              ? 3
-                              : 2
-                            : showCompare
-                              ? 7
-                              : 6
+                          isGroupedSummary ? (showCompare ? 3 : 2) : showCompare ? 7 : 6
                         }
                         className="app-table-empty"
                       >
@@ -754,12 +714,8 @@ export function SalesReportPage() {
                   ) : isGroupedSummary ? (
                     mergedSummaryRows.map((row) => (
                       <tr key={row.key}>
-                        <td title={row.label || undefined}>
-                          {formatText(row.label)}
-                        </td>
-                        <td className="app-table-num">
-                          {formatNumber(row.qty)}
-                        </td>
+                        <td title={row.label || undefined}>{formatText(row.label)}</td>
+                        <td className="app-table-num">{formatNumber(row.qty)}</td>
                         {showCompare ? (
                           <td className="app-table-num">
                             {formatNumber(row.compareQty)}
@@ -778,9 +734,7 @@ export function SalesReportPage() {
                         <td className="app-table-num">
                           {formatNumber(row.item_count)}
                         </td>
-                        <td className="app-table-num">
-                          {formatNumber(row.qty)}
-                        </td>
+                        <td className="app-table-num">{formatNumber(row.qty)}</td>
                         {showCompare ? (
                           <td className="app-table-num">
                             {formatNumber(row.compareQty)}
@@ -793,9 +747,7 @@ export function SalesReportPage() {
                     displayRows.map(({ row, showVoucherHeader }) => (
                       <tr key={row.id}>
                         <td>{formatDate(row.voucher_date)}</td>
-                        <td>
-                          {showVoucherHeader ? formatText(row.voucher_no) : ""}
-                        </td>
+                        <td>{showVoucherHeader ? formatText(row.voucher_no) : ""}</td>
                         <td
                           title={
                             showVoucherHeader
@@ -803,19 +755,13 @@ export function SalesReportPage() {
                               : undefined
                           }
                         >
-                          {showVoucherHeader
-                            ? formatText(row.ledger_name)
-                            : ""}
+                          {showVoucherHeader ? formatText(row.ledger_name) : ""}
                         </td>
                         <td title={row.stock_item?.trim() || undefined}>
                           {formatText(row.stock_item)}
                         </td>
-                        <td className="app-table-num">
-                          {formatNumber(row.qty)}
-                        </td>
-                        <td className="app-table-num">
-                          {formatRate(row.rate)}
-                        </td>
+                        <td className="app-table-num">{formatNumber(row.qty)}</td>
+                        <td className="app-table-num">{formatRate(row.rate)}</td>
                       </tr>
                     ))
                   )}

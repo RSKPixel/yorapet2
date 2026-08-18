@@ -29,16 +29,8 @@ const companyProfileSchema = z.object({
     .trim()
     .min(1, "Address is required")
     .max(500, "Address is too long"),
-  area: z
-    .string()
-    .trim()
-    .min(1, "Area is required")
-    .max(120, "Area is too long"),
-  city: z
-    .string()
-    .trim()
-    .min(1, "City is required")
-    .max(120, "City is too long"),
+  area: z.string().trim().min(1, "Area is required").max(120, "Area is too long"),
+  city: z.string().trim().min(1, "City is required").max(120, "City is too long"),
   pin: z
     .string()
     .trim()

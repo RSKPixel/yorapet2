@@ -4,19 +4,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import {
-  FormInput,
-  FormPanel,
-  FormSelect,
-  defaultWinForm,
-} from "@/components/forms";
+import { FormInput, FormPanel, FormSelect, defaultWinForm } from "@/components/forms";
 import { PlusUserIcon } from "@/components/forms/formIcons";
 import { useAuth } from "@/hooks/useAuth";
 import { useFormMessage } from "@/hooks/useFormMessage";
-import {
-  userService,
-  type ManagedUser,
-} from "@/services/userService";
+import { userService, type ManagedUser } from "@/services/userService";
 
 const createUserSchema = z.object({
   username: z
@@ -87,7 +79,10 @@ export function UsersPanel() {
     mutationFn: userService.createUser,
     onSuccess: async (created) => {
       queryClient.setQueryData<ManagedUser[]>(["users"], (current) => {
-        const next = [...(current ?? []).filter((user) => user.id !== created.id), created];
+        const next = [
+          ...(current ?? []).filter((user) => user.id !== created.id),
+          created,
+        ];
         next.sort((a, b) => a.username.localeCompare(b.username));
         return next;
       });
@@ -127,9 +122,7 @@ export function UsersPanel() {
         if (!current) {
           return [updated];
         }
-        return current.map((user) =>
-          user.id === updated.id ? updated : user,
-        );
+        return current.map((user) => (user.id === updated.id ? updated : user));
       });
       await queryClient.invalidateQueries({ queryKey: ["users"] });
       showSuccess("User updated successfully.");
@@ -228,10 +221,7 @@ export function UsersPanel() {
           {usersQuery.isLoading ? (
             <p className="app-table-empty">Loading users…</p>
           ) : usersQuery.isError ? (
-            <p
-              className="app-table-empty text-[var(--color-danger)]"
-              role="alert"
-            >
+            <p className="app-table-empty text-[var(--color-danger)]" role="alert">
               {(usersQuery.error as Error).message}
             </p>
           ) : (

@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from datetime import datetime
 
+from app.db.base import LegacyBase
 from sqlalchemy import BigInteger, DateTime, Float, Text
 from sqlalchemy.orm import Mapped, mapped_column
-
-from app.db.base import LegacyBase
 
 
 class TallyPurchase(LegacyBase):

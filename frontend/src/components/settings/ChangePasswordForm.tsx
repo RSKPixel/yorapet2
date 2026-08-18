@@ -10,9 +10,7 @@ import { authService } from "@/services/authService";
 const changePasswordSchema = z
   .object({
     currentPassword: z.string().min(1, "Current password is required"),
-    newPassword: z
-      .string()
-      .min(8, "New password must be at least 8 characters"),
+    newPassword: z.string().min(8, "New password must be at least 8 characters"),
     confirmPassword: z.string().min(1, "Confirm your new password"),
   })
   .refine((values) => values.newPassword === values.confirmPassword, {
@@ -54,17 +52,12 @@ export function ChangePasswordForm() {
       wide
       onSubmit={handleSubmit(async (values) => {
         try {
-          await authService.changePassword(
-            values.currentPassword,
-            values.newPassword,
-          );
+          await authService.changePassword(values.currentPassword, values.newPassword);
           reset();
           showSuccess("Password updated successfully.");
         } catch (error) {
           showError(
-            error instanceof Error
-              ? error.message
-              : "Unable to change password",
+            error instanceof Error ? error.message : "Unable to change password",
           );
         }
       })}

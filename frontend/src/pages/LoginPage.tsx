@@ -5,10 +5,7 @@ import { z } from "zod";
 
 import { BrandName } from "@/components/brand";
 import { FormInput, FormPanel, defaultWinForm } from "@/components/forms";
-import {
-  LoginIcon,
-  UserCircleIcon,
-} from "@/components/forms/formIcons";
+import { LoginIcon, UserCircleIcon } from "@/components/forms/formIcons";
 import { useAuth } from "@/hooks/useAuth";
 import { useFormMessage } from "@/hooks/useFormMessage";
 
@@ -56,8 +53,7 @@ export function LoginPage() {
   const destination = state?.from?.pathname
     ? `${state.from.pathname}${state.from.search ?? ""}${state.from.hash ?? ""}`
     : "/";
-  const validationMessage =
-    errors.username?.message ?? errors.password?.message;
+  const validationMessage = errors.username?.message ?? errors.password?.message;
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[var(--color-surface)] px-4 py-10">
@@ -75,9 +71,7 @@ export function LoginPage() {
               await login(values.username, values.password);
               navigate(destination, { replace: true });
             } catch (error) {
-              showError(
-                error instanceof Error ? error.message : "Unable to sign in",
-              );
+              showError(error instanceof Error ? error.message : "Unable to sign in");
             }
           })}
           footerMessage={validationMessage}
@@ -87,10 +81,7 @@ export function LoginPage() {
               disabled={isSubmitting}
               className={defaultWinForm.buttonPrimary}
             >
-              <LoginIcon
-                className="default-win-form__button-icon"
-                aria-hidden="true"
-              />
+              <LoginIcon className="default-win-form__button-icon" aria-hidden="true" />
               {isSubmitting ? "Logging in…" : "Login"}
             </button>
           }

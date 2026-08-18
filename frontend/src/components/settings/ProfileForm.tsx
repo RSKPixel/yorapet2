@@ -77,9 +77,7 @@ export function ProfileForm() {
   }, [user?.displayName, user?.email, user?.phone, reset]);
 
   const validationMessage =
-    errors.displayName?.message ??
-    errors.email?.message ??
-    errors.phone?.message;
+    errors.displayName?.message ?? errors.email?.message ?? errors.phone?.message;
 
   return (
     <FormPanel
@@ -97,9 +95,7 @@ export function ProfileForm() {
           showSuccess("Profile updated successfully.");
         } catch (error) {
           showError(
-            error instanceof Error
-              ? error.message
-              : "Unable to update profile",
+            error instanceof Error ? error.message : "Unable to update profile",
           );
         }
       })}
@@ -124,15 +120,11 @@ export function ProfileForm() {
           </div>
           <div className="min-w-0">
             <p className="truncate text-[0.9375rem] font-semibold text-[var(--color-ink)]">
-              {watchedDisplayName.trim() ||
-                user?.displayName ||
-                "Your profile"}
+              {watchedDisplayName.trim() || user?.displayName || "Your profile"}
             </p>
             <p className="truncate text-[0.875rem] text-[var(--color-muted)]">
               @{user?.username}
-              {user?.role ? (
-                <span className="capitalize"> · {user.role}</span>
-              ) : null}
+              {user?.role ? <span className="capitalize"> · {user.role}</span> : null}
             </p>
           </div>
         </div>

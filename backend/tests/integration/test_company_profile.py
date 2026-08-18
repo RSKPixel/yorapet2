@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-from fastapi.testclient import TestClient
-
 from app.core.config import get_settings
+from fastapi.testclient import TestClient
 
 
 def _login(client: TestClient, username: str, password: str) -> None:

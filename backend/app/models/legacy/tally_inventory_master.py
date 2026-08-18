@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
+from app.db.base import LegacyBase
 from sqlalchemy import BigInteger, Float, Text
 from sqlalchemy.orm import Mapped, mapped_column
-
-from app.db.base import LegacyBase
 
 
 class TallyInventoryMaster(LegacyBase):

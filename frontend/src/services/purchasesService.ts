@@ -1,8 +1,5 @@
 import { apiClient } from "@/services/apiClient";
-import type {
-  PurchaseLineResponse,
-  PurchaseListResponse,
-} from "@/types/purchases";
+import type { PurchaseLineResponse, PurchaseListResponse } from "@/types/purchases";
 
 export type PurchaseLine = PurchaseLineResponse;
 

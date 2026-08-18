@@ -66,10 +66,7 @@ export function FormPanel({
         <div className={defaultWinForm.header}>
           <span className={defaultWinForm.title}>
             {TitleIcon ? (
-              <TitleIcon
-                className={defaultWinForm.titleIcon}
-                aria-hidden="true"
-              />
+              <TitleIcon className={defaultWinForm.titleIcon} aria-hidden="true" />
             ) : null}
             {title}
           </span>
@@ -135,15 +132,9 @@ type FormFieldProps = {
   className?: string;
 };
 
-export function FormField({
-  label,
-  children,
-  className = "",
-}: FormFieldProps) {
+export function FormField({ label, children, className = "" }: FormFieldProps) {
   return (
-    <label
-      className={[defaultWinForm.field, className].filter(Boolean).join(" ")}
-    >
+    <label className={[defaultWinForm.field, className].filter(Boolean).join(" ")}>
       <span className={defaultWinForm.label}>{label}</span>
       {children}
     </label>

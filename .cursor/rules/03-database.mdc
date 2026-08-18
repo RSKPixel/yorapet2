@@ -13,7 +13,7 @@ Current application-owned tables:
 - `yorapet_purchase_line_credit` — manual per-line credit notes keyed by purchase `sync_key` (survives Tally sync)
 - `yorapet_purchase_credit_note` — legacy stock-item credit notes (superseded by costing-page line credits)
 - `yorapet_sales` — sales lines synced from `tallydata_sales` (matched by `sync_key` content hash)
-- `yorapet_opening_stock` — opening stock balances for stock summary / FIFO
+- `yorapet_opening_stock` — opening stock balances for FIFO costing
 - `yorapet_inventory_extra` — app-owned stock item fields (weight, neck size, qty per box, box dimension, reorder level) keyed by `stock_item` from `tallydata_inventorymaster`
 - `yorapet_inventory_image` — up to 4 images per stock item (BLOB + content type), keyed by `stock_item`
 
@@ -35,6 +35,12 @@ The database contains legacy tables prefixed with:
 tallydata_*
 
 These tables are maintained externally and are not owned by this application.
+
+Known tables used by the app (read-only):
+
+- `tallydata_inventorymaster` — stock item master (group, packing, units)
+- `tallydata_stockposition` — closing stock qty / rate / value for Stock Summary (display `closing_value * -1`)
+- `tallydata_purchases` / `tallydata_sales` — source for synced `yorapet_*` lines
 
 Rules
 

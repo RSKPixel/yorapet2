@@ -28,10 +28,10 @@ def compute_line_cost(
     value_addition: Decimal | float | int | None = None,
     credit_note: Decimal | float | int | None = None,
 ) -> tuple[Decimal, Decimal | None]:
-    """cost_value = amount + value_addition - credit_note; cost_price = cost_value / qty."""
-    cost_value = (
-        _dec(amount) + _dec(value_addition) - _dec(credit_note)
-    ).quantize(Decimal("0.01"))
+    """Compute cost_value and cost_price from purchase line fields."""
+    cost_value = (_dec(amount) + _dec(value_addition) - _dec(credit_note)).quantize(
+        Decimal("0.01")
+    )
     quantity = _dec(qty)
     if quantity == 0:
         return cost_value, None

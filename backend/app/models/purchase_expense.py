@@ -27,7 +27,9 @@ class YorapetPurchaseExpense(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     voucher_no: Mapped[str] = mapped_column(String(64), index=True)
-    voucher_date: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, index=True)
+    voucher_date: Mapped[datetime | None] = mapped_column(
+        DateTime, nullable=True, index=True
+    )
     expenses: Mapped[Decimal] = mapped_column(_NUMERIC, default=Decimal("0"))
     credit_note: Mapped[Decimal] = mapped_column(_NUMERIC, default=Decimal("0"))
     created_at: Mapped[datetime] = mapped_column(

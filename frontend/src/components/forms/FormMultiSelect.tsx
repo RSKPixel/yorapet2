@@ -27,10 +27,7 @@ type FormMultiSelectProps = {
   searchPlaceholder?: string;
 };
 
-function selectionLabel(
-  selected: FormDropdownOption[],
-  placeholder: string,
-): string {
+function selectionLabel(selected: FormDropdownOption[], placeholder: string): string {
   if (selected.length === 0) {
     return placeholder;
   }
@@ -94,14 +91,10 @@ export function FormMultiSelect({
     const gap = 4;
     const spaceBelow = window.innerHeight - rect.bottom - gap;
     const spaceAbove = rect.top - gap;
-    const openUp =
-      spaceBelow < Math.min(maxHeight, 160) && spaceAbove > spaceBelow;
+    const openUp = spaceBelow < Math.min(maxHeight, 160) && spaceAbove > spaceBelow;
     const height = Math.min(maxHeight, openUp ? spaceAbove : spaceBelow);
 
-    const width = Math.min(
-      window.innerWidth - 16,
-      Math.max(rect.width, 28 * 16),
-    );
+    const width = Math.min(window.innerWidth - 16, Math.max(rect.width, 28 * 16));
 
     setMenuStyle({
       position: "fixed",
@@ -202,9 +195,7 @@ export function FormMultiSelect({
       if (!filtered.length) {
         return;
       }
-      setHighlight((index) =>
-        Math.min(index + 1, Math.max(filtered.length - 1, 0)),
-      );
+      setHighlight((index) => Math.min(index + 1, Math.max(filtered.length - 1, 0)));
       keyboardScrollRef.current = true;
       return;
     }
@@ -245,10 +236,7 @@ export function FormMultiSelect({
       ? createPortal(
           <div
             ref={listRef}
-            className={[
-              "default-win-form__multi-select-menu",
-              listClassName,
-            ]
+            className={["default-win-form__multi-select-menu", listClassName]
               .filter(Boolean)
               .join(" ")}
             style={menuStyle}
@@ -286,7 +274,11 @@ export function FormMultiSelect({
                   const active = index === highlight;
                   const checked = selectedSet.has(String(option.value));
                   return (
-                    <li key={String(option.value)} role="option" aria-selected={checked}>
+                    <li
+                      key={String(option.value)}
+                      role="option"
+                      aria-selected={checked}
+                    >
                       <button
                         type="button"
                         data-active={active ? "true" : undefined}
@@ -356,10 +348,7 @@ export function FormMultiSelect({
       >
         <span className="default-win-form__dropdown-label">{label}</span>
         <ChevronDownIcon
-          className={[
-            "default-win-form__dropdown-chevron",
-            open ? "is-open" : "",
-          ]
+          className={["default-win-form__dropdown-chevron", open ? "is-open" : ""]
             .filter(Boolean)
             .join(" ")}
           aria-hidden="true"

@@ -68,9 +68,7 @@
       (var(--form-control-pad-y) * 2) + (var(--form-control-border) * 2)
   );
   --form-bar-pad-y: 0.45rem;
-  --form-bar-min-height: calc(
-    var(--form-control-height) + (var(--form-bar-pad-y) * 2)
-  );
+  --form-bar-min-height: calc(var(--form-control-height) + (var(--form-bar-pad-y) * 2));
 }
 
 .default-win-form {
@@ -347,11 +345,7 @@
 }
 
 .default-win-form__control:focus {
-  border-color: color-mix(
-    in srgb,
-    var(--form-accent) 55%,
-    var(--form-input-line)
-  );
+  border-color: color-mix(in srgb, var(--form-accent) 55%, var(--form-input-line));
   box-shadow: 0 0 0 3px var(--form-accent-soft);
 }
 
@@ -688,12 +682,14 @@ button.default-win-form__dropdown-trigger {
   transition: transform 120ms ease;
 }
 
-.default-win-form__multi-select-option.is-selected .default-win-form__multi-select-check {
+.default-win-form__multi-select-option.is-selected
+  .default-win-form__multi-select-check {
   border-color: var(--form-accent);
   background: var(--form-accent);
 }
 
-.default-win-form__multi-select-option.is-selected .default-win-form__multi-select-check::after {
+.default-win-form__multi-select-option.is-selected
+  .default-win-form__multi-select-check::after {
   transform: rotate(-45deg) scale(1);
 }
 

@@ -6,7 +6,6 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
 import pytest
-
 from app.core.exceptions import ConflictError
 from app.services.user_service import UserService
 

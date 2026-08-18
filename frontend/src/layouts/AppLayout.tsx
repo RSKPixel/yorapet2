@@ -10,6 +10,7 @@ import {
   DocumentChartBarIcon,
   HomeIcon,
   InboxStackIcon,
+  PresentationChartLineIcon,
   RectangleStackIcon,
   ShoppingBagIcon,
   TableCellsIcon,
@@ -19,10 +20,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 import { BrandName } from "@/components/brand";
-import {
-  readSidebarPinned,
-  writeSidebarPinned,
-} from "@/config/sidebarPin";
+import { readSidebarPinned, writeSidebarPinned } from "@/config/sidebarPin";
 import { useAuth } from "@/hooks/useAuth";
 import { useFormMessage } from "@/hooks/useFormMessage";
 import { useSettings } from "@/hooks/useSettings";
@@ -185,6 +183,11 @@ const navSections: NavSection[] = [
         icon: <DocumentChartBarIcon className={iconClass} aria-hidden="true" />,
       },
       {
+        to: "/reports/stock-pnl",
+        label: "Stock Wise P&L",
+        icon: <PresentationChartLineIcon className={iconClass} aria-hidden="true" />,
+      },
+      {
         to: "/reports/sales",
         label: "Sales",
         icon: <BanknotesIcon className={iconClass} aria-hidden="true" />,
@@ -227,9 +230,7 @@ function navItemLayout(expanded: boolean) {
 function navLabelClass(expanded: boolean) {
   return [
     "whitespace-nowrap transition-opacity duration-200",
-    expanded
-      ? "opacity-100"
-      : "pointer-events-none w-0 overflow-hidden opacity-0",
+    expanded ? "opacity-100" : "pointer-events-none w-0 overflow-hidden opacity-0",
   ].join(" ");
 }
 
@@ -284,9 +285,13 @@ export function AppLayout() {
   const activeSection =
     navSections.find((section) =>
       section.items.some((item) =>
-        item.end ? location.pathname === item.to : location.pathname.startsWith(item.to),
+        item.end
+          ? location.pathname === item.to
+          : location.pathname.startsWith(item.to),
       ),
-    )?.id ?? navSections[0]?.id ?? "dashboard";
+    )?.id ??
+    navSections[0]?.id ??
+    "dashboard";
   const [openSection, setOpenSection] = useState(activeSection);
 
   const expanded = pinned || hovered;
@@ -360,9 +365,7 @@ export function AppLayout() {
                     to={section.items[0]?.to ?? "/"}
                     end={section.items[0]?.end}
                     title={section.label}
-                    className={({ isActive }) =>
-                      navSectionButtonClass(isActive)
-                    }
+                    className={({ isActive }) => navSectionButtonClass(isActive)}
                   >
                     {section.icon}
                     <span
@@ -376,48 +379,48 @@ export function AppLayout() {
                   </NavLink>
                 ) : (
                   <>
-                <button
-                  type="button"
-                  title={section.label}
-                  aria-expanded={openSection === section.id}
-                  onClick={() => setOpenSection(section.id)}
-                  className={navSectionButtonClass(activeSection === section.id)}
-                >
-                  {section.icon}
-                  <span
-                    className={[
-                      navLabelClass(expanded),
-                      "text-[0.95rem] font-semibold",
-                    ].join(" ")}
-                  >
-                    {section.label}
-                  </span>
-                  {expanded ? (
-                    <ChevronDownIcon
-                      className={[
-                        "ml-auto h-4 w-4 shrink-0 transition-transform duration-200",
-                        openSection === section.id ? "rotate-0" : "-rotate-90",
-                      ].join(" ")}
-                      aria-hidden="true"
-                    />
-                  ) : null}
-                </button>
-                {expanded && openSection === section.id ? (
-                  <div className="flex flex-col gap-1 pb-1">
-                    {section.items.map((item) => (
-                      <NavLink
-                        key={item.to}
-                        to={item.to}
-                        end={item.end}
-                        title={item.label}
-                        className={({ isActive }) => navSubItemClass(isActive)}
+                    <button
+                      type="button"
+                      title={section.label}
+                      aria-expanded={openSection === section.id}
+                      onClick={() => setOpenSection(section.id)}
+                      className={navSectionButtonClass(activeSection === section.id)}
+                    >
+                      {section.icon}
+                      <span
+                        className={[
+                          navLabelClass(expanded),
+                          "text-[0.95rem] font-semibold",
+                        ].join(" ")}
                       >
-                        {item.icon}
-                        <span className="truncate">{item.label}</span>
-                      </NavLink>
-                    ))}
-                  </div>
-                ) : null}
+                        {section.label}
+                      </span>
+                      {expanded ? (
+                        <ChevronDownIcon
+                          className={[
+                            "ml-auto h-4 w-4 shrink-0 transition-transform duration-200",
+                            openSection === section.id ? "rotate-0" : "-rotate-90",
+                          ].join(" ")}
+                          aria-hidden="true"
+                        />
+                      ) : null}
+                    </button>
+                    {expanded && openSection === section.id ? (
+                      <div className="flex flex-col gap-1 pb-1">
+                        {section.items.map((item) => (
+                          <NavLink
+                            key={item.to}
+                            to={item.to}
+                            end={item.end}
+                            title={item.label}
+                            className={({ isActive }) => navSubItemClass(isActive)}
+                          >
+                            {item.icon}
+                            <span className="truncate">{item.label}</span>
+                          </NavLink>
+                        ))}
+                      </div>
+                    ) : null}
                   </>
                 )}
               </div>
@@ -453,9 +456,7 @@ export function AppLayout() {
                 type="button"
                 title="Logout"
                 onClick={() => void logout()}
-                className={[footerActionClass, navItemLayout(expanded)].join(
-                  " ",
-                )}
+                className={[footerActionClass, navItemLayout(expanded)].join(" ")}
               >
                 {LogoutIcon}
                 <span className={navLabelClass(expanded)}>Logout</span>

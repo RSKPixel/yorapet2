@@ -42,7 +42,9 @@ def voucher_dates_equal(
     return a == b
 
 
-def voucher_option_key(voucher_no: str, voucher_date: datetime | date | str | None) -> str:
+def voucher_option_key(
+    voucher_no: str, voucher_date: datetime | date | str | None
+) -> str:
     date_part = ""
     normalized = normalize_voucher_date(voucher_date)
     if normalized is not None:

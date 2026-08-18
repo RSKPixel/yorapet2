@@ -48,11 +48,7 @@ export const SALES_REPORT_VIEW_OPTIONS: ReportViewOption[] = [
   },
 ];
 
-export type SalesSummaryGroupByKey =
-  | "voucher"
-  | "buyer"
-  | "stock_item"
-  | "stock_group";
+export type SalesSummaryGroupByKey = "voucher" | "buyer" | "stock_item" | "stock_group";
 
 export type SalesSummaryGroupByOption = {
   value: SalesSummaryGroupByKey;
@@ -67,25 +63,20 @@ export const SALES_SUMMARY_GROUP_BY_OPTIONS: SalesSummaryGroupByOption[] = [
 ];
 
 export type PurchaseSummaryGroupByKey =
-  | "voucher"
-  | "supplier"
-  | "stock_item"
-  | "stock_group"
-  | "stock_group_vendor";
+  "voucher" | "supplier" | "stock_item" | "stock_group" | "stock_group_vendor";
 
 export type PurchaseSummaryGroupByOption = {
   value: PurchaseSummaryGroupByKey;
   label: string;
 };
 
-export const PURCHASE_SUMMARY_GROUP_BY_OPTIONS: PurchaseSummaryGroupByOption[] =
-  [
-    { value: "stock_group", label: "Stock group" },
-    { value: "stock_group_vendor", label: "Stock group + vendor" },
-    { value: "supplier", label: "Supplier" },
-    { value: "stock_item", label: "Stock item" },
-    { value: "voucher", label: "Voucher" },
-  ];
+export const PURCHASE_SUMMARY_GROUP_BY_OPTIONS: PurchaseSummaryGroupByOption[] = [
+  { value: "stock_group", label: "Stock group" },
+  { value: "stock_group_vendor", label: "Stock group + vendor" },
+  { value: "supplier", label: "Supplier" },
+  { value: "stock_item", label: "Stock item" },
+  { value: "voucher", label: "Voucher" },
+];
 
 /** Indian FY month order: Apr → Mar. */
 export const FY_MONTH_LABELS = [
@@ -230,9 +221,7 @@ export function resolveSalesPeriodRange(
       };
     case "this_month":
       return {
-        dateFrom: toIsoDate(
-          new Date(reference.getFullYear(), reference.getMonth(), 1),
-        ),
+        dateFrom: toIsoDate(new Date(reference.getFullYear(), reference.getMonth(), 1)),
         dateTo: toIsoDate(
           new Date(reference.getFullYear(), reference.getMonth() + 1, 0),
         ),
@@ -256,10 +245,7 @@ export function resolveSalesPeriodRange(
   }
 }
 
-export function isDateInRange(
-  value: string | null | undefined,
-  range: DateRange,
-) {
+export function isDateInRange(value: string | null | undefined, range: DateRange) {
   if (!value) {
     return false;
   }
@@ -289,7 +275,6 @@ function shiftRangeByLength(range: DateRange): DateRange {
   };
 }
 
-/** Natural prior period for the selected Period control. */
 export function resolvePreviousPeriodRange(
   period: SalesPeriodKey,
   activeRange: DateRange,
@@ -334,5 +319,74 @@ export function resolvePreviousPeriodRange(
       return shiftRangeByLength(activeRange);
     default:
       return shiftRangeByLength(activeRange);
+  }
+}
+
+export type StockPnlPeriodKey =
+  | "all"
+  | "this_week"
+  | "previous_week"
+  | "this_month"
+  | "current_fy";
+
+export type StockPnlPeriodOption = {
+  value: StockPnlPeriodKey;
+  label: string;
+};
+
+export const STOCK_PNL_PERIOD_OPTIONS: StockPnlPeriodOption[] = [
+  { value: "all", label: "All sales" },
+  { value: "this_week", label: "This week" },
+  { value: "previous_week", label: "Previous week" },
+  { value: "this_month", label: "This month" },
+  { value: "current_fy", label: "Current FY" },
+];
+
+export type PnlResultFilterKey = "all" | "profits" | "losses";
+
+export type PnlResultFilterOption = {
+  value: PnlResultFilterKey;
+  label: string;
+};
+
+export const PNL_RESULT_FILTER_OPTIONS: PnlResultFilterOption[] = [
+  { value: "profits", label: "Profits" },
+  { value: "losses", label: "Losses" },
+];
+
+export function resolveStockPnlPeriodRange(
+  period: StockPnlPeriodKey,
+  reference = new Date(),
+): DateRange | null {
+  if (period === "all") {
+    return null;
+  }
+
+  const today = toIsoDate(reference);
+
+  switch (period) {
+    case "this_week":
+      return {
+        dateFrom: toIsoDate(startOfIsoWeek(reference)),
+        dateTo: toIsoDate(endOfIsoWeek(reference)),
+      };
+    case "previous_week": {
+      const start = startOfIsoWeek(reference);
+      start.setDate(start.getDate() - 7);
+      const end = new Date(start);
+      end.setDate(end.getDate() + 6);
+      return { dateFrom: toIsoDate(start), dateTo: toIsoDate(end) };
+    }
+    case "this_month":
+      return {
+        dateFrom: toIsoDate(new Date(reference.getFullYear(), reference.getMonth(), 1)),
+        dateTo: toIsoDate(
+          new Date(reference.getFullYear(), reference.getMonth() + 1, 0),
+        ),
+      };
+    case "current_fy":
+      return getCurrentFyRange(reference);
+    default:
+      return { dateFrom: today, dateTo: today };
   }
 }

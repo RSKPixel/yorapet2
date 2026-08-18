@@ -6,10 +6,7 @@ type YoraMarkProps = {
 };
 
 /** Geometric Y mark — same family language as Yoradm (gold terminals on charcoal). */
-export function YoraMark({
-  className = "h-9 w-9",
-  title = "YORA PET",
-}: YoraMarkProps) {
+export function YoraMark({ className = "h-9 w-9", title = "YORA PET" }: YoraMarkProps) {
   const uid = useId().replace(/:/g, "");
   const bgId = `yp-bg-${uid}`;
   const markId = `yp-mark-${uid}`;

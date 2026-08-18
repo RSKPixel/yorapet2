@@ -9,11 +9,7 @@ export function SectionPage({ section, page }: SectionPageProps) {
   return (
     <section>
       <PageHeader
-        items={[
-          { label: "Dashboard", to: "/" },
-          { label: section },
-          { label: page },
-        ]}
+        items={[{ label: "Dashboard", to: "/" }, { label: section }, { label: page }]}
       />
     </section>
   );

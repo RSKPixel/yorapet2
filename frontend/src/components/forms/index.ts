@@ -7,10 +7,7 @@ export { FormInput } from "@/components/forms/FormInput";
 export { FormField, FormPanel } from "@/components/forms/FormPanel";
 export { FormSelect } from "@/components/forms/FormSelect";
 export { FormTextarea } from "@/components/forms/FormTextarea";
-export {
-  DEFAULT_WIN_FORM_CLASS,
-  defaultWinForm,
-} from "@/components/forms/formClasses";
+export { DEFAULT_WIN_FORM_CLASS, defaultWinForm } from "@/components/forms/formClasses";
 export {
   CompanyProfileIcon,
   CogIcon,
@@ -28,4 +25,3 @@ export {
   FormMessageProvider,
   useFormMessage,
 } from "@/components/forms/FormMessage";
-

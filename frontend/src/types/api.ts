@@ -21,6 +21,10 @@ export type AuthUserResponse = {
 
 export type AuthResponse = {
   user: AuthUserResponse;
+  /** Present when login/refresh used delivery=bearer (mobile clients). */
+  access_token?: string | null;
+  refresh_token?: string | null;
+  token_type?: "bearer" | null;
 };
 
 export type UpdateProfileRequest = {

@@ -11,6 +11,7 @@ import { InventoryMasterPage } from "@/pages/master/InventoryMasterPage";
 import { PurchasesReportPage } from "@/pages/reports/PurchasesReportPage";
 import { SalesReportPage } from "@/pages/reports/SalesReportPage";
 import { StockSummaryPage } from "@/pages/reports/StockSummaryPage";
+import { StockWisePnlPage } from "@/pages/reports/StockWisePnlPage";
 import { SectionPage } from "@/pages/SectionPage";
 import { CostingPage } from "@/pages/transactions/CostingPage";
 import { CreditNotePage } from "@/pages/transactions/CreditNotePage";
@@ -27,39 +28,24 @@ export function AppRouter() {
             <Route path="data/tally-data" element={<TallyDataPage />} />
             <Route
               path="stock-movements/stock-journal"
-              element={
-                <SectionPage
-                  section="Stock Movements"
-                  page="Stock Journal"
-                />
-              }
+              element={<SectionPage section="Stock Movements" page="Stock Journal" />}
             />
             <Route
               path="stock-movements/blowing"
-              element={
-                <SectionPage section="Stock Movements" page="Blowing" />
-              }
+              element={<SectionPage section="Stock Movements" page="Blowing" />}
             />
             <Route
               path="stock-movements/packing-materials"
               element={
-                <SectionPage
-                  section="Stock Movements"
-                  page="Packing Materials"
-                />
+                <SectionPage section="Stock Movements" page="Packing Materials" />
               }
             />
-            <Route
-              path="reports/stock-summary"
-              element={<StockSummaryPage />}
-            />
+            <Route path="reports/stock-summary" element={<StockSummaryPage />} />
+            <Route path="reports/stock-pnl" element={<StockWisePnlPage />} />
             <Route path="reports/sales" element={<SalesReportPage />} />
             <Route path="reports/purchases" element={<PurchasesReportPage />} />
             <Route path="transactions/costing" element={<CostingPage />} />
-            <Route
-              path="transactions/credit-note"
-              element={<CreditNotePage />}
-            />
+            <Route path="transactions/credit-note" element={<CreditNotePage />} />
             <Route path="status" element={<OpenSettingsRoute tab="general" />} />
             <Route path="example-form" element={<Navigate to="/" replace />} />
             <Route
@@ -67,10 +53,7 @@ export function AppRouter() {
               element={<OpenSettingsRoute tab="companyProfile" />}
             />
             <Route path="settings" element={<OpenSettingsRoute />} />
-            <Route
-              path="users"
-              element={<OpenSettingsRoute tab="users" />}
-            />
+            <Route path="users" element={<OpenSettingsRoute tab="users" />} />
             <Route path="home" element={<Navigate to="/" replace />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>

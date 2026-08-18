@@ -36,11 +36,7 @@ type FormMessageContextValue = {
   showErrors: (messages: string | string[], duration?: number) => string[];
   dismissToast: (id: string) => void;
   clearToasts: () => void;
-  showMessage: (
-    text: string,
-    type?: FormMessageType,
-    duration?: number,
-  ) => string;
+  showMessage: (text: string, type?: FormMessageType, duration?: number) => string;
   showSuccess: (text: string, duration?: number) => string;
   showError: (text: string, duration?: number) => string;
   showInfo: (text: string, duration?: number) => string;
@@ -58,9 +54,7 @@ export function FormMessageProvider({ children }: FormMessageProviderProps) {
   const [toasts, setToasts] = useState<FormToast[]>([]);
   const [inlineHostCount, setInlineHostCount] = useState(0);
   const toastsRef = useRef(toasts);
-  const timersRef = useRef(
-    new Map<string, { auto?: number; remove?: number }>(),
-  );
+  const timersRef = useRef(new Map<string, { auto?: number; remove?: number }>());
   const inlineHostCountRef = useRef(0);
 
   toastsRef.current = toasts;
@@ -115,9 +109,7 @@ export function FormMessageProvider({ children }: FormMessageProviderProps) {
       }
 
       setToasts((current) =>
-        current.map((entry) =>
-          entry.id === id ? { ...entry, exiting: true } : entry,
-        ),
+        current.map((entry) => (entry.id === id ? { ...entry, exiting: true } : entry)),
       );
 
       timersRef.current.set(id, {
@@ -139,8 +131,7 @@ export function FormMessageProvider({ children }: FormMessageProviderProps) {
       if (!skipCap) {
         const current = toastsRef.current;
         if (current.length >= TOAST_MAX_VISIBLE) {
-          const oldest =
-            current.find((entry) => !entry.exiting) ?? current[0];
+          const oldest = current.find((entry) => !entry.exiting) ?? current[0];
           if (oldest) {
             dismissToast(oldest.id);
           }
@@ -162,8 +153,7 @@ export function FormMessageProvider({ children }: FormMessageProviderProps) {
   );
 
   const showToast = useCallback(
-    (message: string, options: EnqueueOptions = {}) =>
-      enqueueToast(message, options),
+    (message: string, options: EnqueueOptions = {}) => enqueueToast(message, options),
     [enqueueToast],
   );
 
@@ -203,10 +193,8 @@ export function FormMessageProvider({ children }: FormMessageProviderProps) {
       dismissToast,
       clearToasts,
       showMessage,
-      showSuccess: (text, duration) =>
-        showToast(text, { type: "success", duration }),
-      showError: (text, duration) =>
-        showToast(text, { type: "error", duration }),
+      showSuccess: (text, duration) => showToast(text, { type: "success", duration }),
+      showError: (text, duration) => showToast(text, { type: "error", duration }),
       showInfo: (text, duration) => showToast(text, { type: "info", duration }),
     }),
     [
@@ -291,9 +279,7 @@ export function FormMessageInline({
   if (!latest) {
     return (
       <div
-        className={[baseClass, className]
-          .filter(Boolean)
-          .join(" ")}
+        className={[baseClass, className].filter(Boolean).join(" ")}
         aria-live="polite"
       />
     );
@@ -301,11 +287,7 @@ export function FormMessageInline({
 
   return (
     <div
-      className={[
-        baseClass,
-        `${baseClass}--${latest.type}`,
-        className,
-      ]
+      className={[baseClass, `${baseClass}--${latest.type}`, className]
         .filter(Boolean)
         .join(" ")}
       role="alert"

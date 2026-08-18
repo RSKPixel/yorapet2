@@ -128,8 +128,8 @@ export function TallyDataPage() {
                 Tally sync
               </h2>
               <p className="mt-1 text-[0.875rem] text-[var(--color-muted)]">
-                Compares Tally purchase and sales data and stores it in
-                application tables when this page opens.
+                Compares Tally purchase and sales data and stores it in application
+                tables when this page opens.
               </p>
             </div>
             <button
@@ -139,10 +139,9 @@ export function TallyDataPage() {
               className="inline-flex items-center gap-2 rounded-[0.45rem] border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-3 py-2 text-[0.875rem] font-medium text-[var(--color-ink)] transition-colors hover:bg-[var(--color-surface-hover)] disabled:opacity-60"
             >
               <ArrowPathIcon
-                className={[
-                  "h-4 w-4",
-                  syncQuery.isFetching ? "animate-spin" : "",
-                ].join(" ")}
+                className={["h-4 w-4", syncQuery.isFetching ? "animate-spin" : ""].join(
+                  " ",
+                )}
                 aria-hidden="true"
               />
               {syncQuery.isFetching ? "Syncing…" : "Sync again"}

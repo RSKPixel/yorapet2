@@ -31,6 +31,28 @@ class SaleRepository:
         )
         return list(result.scalars().all())
 
+    async def list_recent_by_stock_item(
+        self,
+        stock_item: str,
+        *,
+        limit: int = 15,
+    ) -> list[YorapetSale]:
+        """Newest sales lines for one stock item (by voucher date)."""
+        item = stock_item.strip()
+        if not item or limit <= 0:
+            return []
+        result = await self._session.execute(
+            select(YorapetSale)
+            .where(YorapetSale.stock_item == item)
+            .order_by(
+                YorapetSale.voucher_date.desc(),
+                YorapetSale.voucher_no.desc(),
+                YorapetSale.id.desc(),
+            )
+            .limit(limit),
+        )
+        return list(result.scalars().all())
+
     def add(self, sale: YorapetSale) -> None:
         self._session.add(sale)
 

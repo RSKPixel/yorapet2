@@ -67,9 +67,7 @@ function sanitizeDecimalInput(value: string): string {
   if (dot < 0) {
     return cleaned;
   }
-  return (
-    cleaned.slice(0, dot + 1) + cleaned.slice(dot + 1).replace(/\./g, "")
-  );
+  return cleaned.slice(0, dot + 1) + cleaned.slice(dot + 1).replace(/\./g, "");
 }
 
 /** Format a numeric string to 2 decimal places when leaving the field. */
@@ -90,7 +88,12 @@ function blockNonDecimalKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     return;
   }
   // Disallow minus / plus / exponent — credit notes must be non-negative.
-  if (event.key === "-" || event.key === "+" || event.key === "e" || event.key === "E") {
+  if (
+    event.key === "-" ||
+    event.key === "+" ||
+    event.key === "e" ||
+    event.key === "E"
+  ) {
     event.preventDefault();
     return;
   }
@@ -155,7 +158,12 @@ function allocateExpensesByBoxes(
   return shares;
 }
 
-function computeLineCost(amount: number, expenses: number, credit: number, qty: number) {
+function computeLineCost(
+  amount: number,
+  expenses: number,
+  credit: number,
+  qty: number,
+) {
   const costValue = roundMoney(amount + expenses - credit);
   if (qty === 0) {
     return { costValue, costPrice: null as number | null };
@@ -185,10 +193,7 @@ export function CostingPage() {
   const [fieldError, setFieldError] = useState<string | undefined>();
   const [lineCredits, setLineCredits] = useState<Record<number, string>>({});
 
-  const selected = useMemo(
-    () => decodeVoucherValue(voucherValue),
-    [voucherValue],
-  );
+  const selected = useMemo(() => decodeVoucherValue(voucherValue), [voucherValue]);
   const voucherNo = selected.voucher_no;
   const voucherDate = selected.voucher_date;
 
@@ -261,8 +266,7 @@ export function CostingPage() {
     },
   });
 
-  const fieldsDisabled =
-    !voucherNo || !voucherDate || vouchersQuery.isLoading;
+  const fieldsDisabled = !voucherNo || !voucherDate || vouchersQuery.isLoading;
   const lines = previewQuery.data?.lines ?? [];
   const preview = previewQuery.data;
 
@@ -274,12 +278,7 @@ export function CostingPage() {
       const credit = Math.max(0, toNumber(lineCredits[line.id]));
       const amount = toNumber(line.amount);
       const qty = toNumber(line.qty);
-      const { costValue, costPrice } = computeLineCost(
-        amount,
-        expenses,
-        credit,
-        qty,
-      );
+      const { costValue, costPrice } = computeLineCost(amount, expenses, credit, qty);
       return {
         ...line,
         expenses,
@@ -294,15 +293,9 @@ export function CostingPage() {
     return {
       qty: liveRows.reduce((sum, row) => sum + toNumber(row.qty), 0),
       boxes: liveRows.reduce((sum, row) => sum + toNumber(row.box), 0),
-      amount: roundMoney(
-        liveRows.reduce((sum, row) => sum + toNumber(row.amount), 0),
-      ),
-      credit_note: roundMoney(
-        liveRows.reduce((sum, row) => sum + row.credit, 0),
-      ),
-      cost_value: roundMoney(
-        liveRows.reduce((sum, row) => sum + row.costValue, 0),
-      ),
+      amount: roundMoney(liveRows.reduce((sum, row) => sum + toNumber(row.amount), 0)),
+      credit_note: roundMoney(liveRows.reduce((sum, row) => sum + row.credit, 0)),
+      cost_value: roundMoney(liveRows.reduce((sum, row) => sum + row.costValue, 0)),
     };
   }, [liveRows]);
 
@@ -499,8 +492,7 @@ export function CostingPage() {
               <p className="app-table-empty">Loading cost preview…</p>
             ) : previewQuery.isError ? (
               <p className="app-table-empty text-[var(--color-danger)]">
-                {(previewQuery.error as Error).message ||
-                  "Unable to load cost preview"}
+                {(previewQuery.error as Error).message || "Unable to load cost preview"}
               </p>
             ) : (
               <table className="app-table app-table--costing">
@@ -528,18 +520,10 @@ export function CostingPage() {
                     liveRows.map((row) => (
                       <tr key={row.id}>
                         <td>{row.stock_item || "—"}</td>
-                        <td className="app-table-num">
-                          {formatQty(row.qty)}
-                        </td>
-                        <td className="app-table-num">
-                          {formatMoney(row.box)}
-                        </td>
-                        <td className="app-table-num">
-                          {formatMoney(row.amount)}
-                        </td>
-                        <td className="app-table-num">
-                          {formatMoney(row.expenses)}
-                        </td>
+                        <td className="app-table-num">{formatQty(row.qty)}</td>
+                        <td className="app-table-num">{formatMoney(row.box)}</td>
+                        <td className="app-table-num">{formatMoney(row.amount)}</td>
+                        <td className="app-table-num">{formatMoney(row.expenses)}</td>
                         <td className="app-table-num costing-credit-cell">
                           <FormInput
                             type="text"
@@ -551,9 +535,7 @@ export function CostingPage() {
                             data-lpignore="true"
                             value={lineCredits[row.id] ?? ""}
                             onChange={(event) => {
-                              const value = sanitizeDecimalInput(
-                                event.target.value,
-                              );
+                              const value = sanitizeDecimalInput(event.target.value);
                               setLineCredits((current) => ({
                                 ...current,
                                 [row.id]: value,
@@ -562,20 +544,14 @@ export function CostingPage() {
                             onBlur={() => {
                               setLineCredits((current) => ({
                                 ...current,
-                                [row.id]: formatDecimalDisplay(
-                                  current[row.id] ?? "",
-                                ),
+                                [row.id]: formatDecimalDisplay(current[row.id] ?? ""),
                               }));
                             }}
                             onKeyDown={blockNonDecimalKeyDown}
                           />
                         </td>
-                        <td className="app-table-num">
-                          {formatMoney(row.costValue)}
-                        </td>
-                        <td className="app-table-num">
-                          {formatMoney(row.costPrice)}
-                        </td>
+                        <td className="app-table-num">{formatMoney(row.costValue)}</td>
+                        <td className="app-table-num">{formatMoney(row.costPrice)}</td>
                       </tr>
                     ))
                   )}
@@ -596,19 +572,13 @@ export function CostingPage() {
                     </span>
                   </td>
                   <td className="app-table-num">
-                    {voucherNo && voucherDate
-                      ? formatQty(liveTotals.qty)
-                      : "—"}
+                    {voucherNo && voucherDate ? formatQty(liveTotals.qty) : "—"}
                   </td>
                   <td className="app-table-num">
-                    {voucherNo && voucherDate
-                      ? formatMoney(liveTotals.boxes)
-                      : "—"}
+                    {voucherNo && voucherDate ? formatMoney(liveTotals.boxes) : "—"}
                   </td>
                   <td className="app-table-num">
-                    {voucherNo && voucherDate
-                      ? formatMoney(liveTotals.amount)
-                      : "—"}
+                    {voucherNo && voucherDate ? formatMoney(liveTotals.amount) : "—"}
                   </td>
                   <td />
                   <td
@@ -618,9 +588,7 @@ export function CostingPage() {
                         : "app-table-num costing-credit-total"
                     }
                   >
-                    {voucherNo && voucherDate
-                      ? formatMoney(lineCreditSum)
-                      : "—"}
+                    {voucherNo && voucherDate ? formatMoney(lineCreditSum) : "—"}
                   </td>
                   <td className="app-table-num">
                     {voucherNo && voucherDate

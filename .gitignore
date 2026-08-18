@@ -1,0 +1,39 @@
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+
+# Local env overrides (committed .env files use placeholders only)
+**/.env.local
+**/.env.*.local
+mobile/.env
+
+# Uploads / runtime
+backend/uploads/
+
+# Logs
+*.log
+
+# Lockfile backups and package-manager artifacts
+package-lock.json
+.pnpm-store/

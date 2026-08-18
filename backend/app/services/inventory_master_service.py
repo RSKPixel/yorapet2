@@ -268,7 +268,8 @@ class InventoryMasterService:
         await self._images.delete_by_id(image_id)
         remaining = await self._images_for_item(stock_item)
         # Compact positions to 1..n after delete.
-        for index, row in enumerate(sorted(remaining, key=lambda r: (r.position, r.id)), start=1):
+        sorted_rows = sorted(remaining, key=lambda r: (r.position, r.id))
+        for index, row in enumerate(sorted_rows, start=1):
             row.position = index
         if remaining:
             await self._images.flush()

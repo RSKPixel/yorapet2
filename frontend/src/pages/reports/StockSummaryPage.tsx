@@ -1,19 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
-import {
-  FormDropdown,
-  FormField,
-  FormMultiSelect,
-} from "@/components/forms";
+import { FormDropdown, FormField, FormMultiSelect } from "@/components/forms";
 import type { FormDropdownOption } from "@/components/forms";
+import { StockItemActivityModal } from "@/components/reports/StockItemActivityModal";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { stockSummaryService } from "@/services/stockSummaryService";
 import type { StockSummaryItem } from "@/types/stockSummary";
-
-const dateFormatter = new Intl.DateTimeFormat(undefined, {
-  dateStyle: "medium",
-});
 
 const numberFormatter = new Intl.NumberFormat(undefined, {
   minimumFractionDigits: 0,
@@ -24,22 +17,6 @@ const rateFormatter = new Intl.NumberFormat(undefined, {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
-
-function todayIso() {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function formatAsOnLabel(isoDate: string) {
-  const date = new Date(`${isoDate}T00:00:00`);
-  if (Number.isNaN(date.getTime())) {
-    return isoDate;
-  }
-  return dateFormatter.format(date);
-}
 
 function formatNumber(value: number | null | undefined) {
   if (value === null || value === undefined || Number.isNaN(value)) {
@@ -64,11 +41,7 @@ function uniqueGroupOptions(
   values: Array<string | null | undefined>,
   allLabel: string,
 ): FormDropdownOption[] {
-  const unique = new Set(
-    values
-      .map((value) => value?.trim() ?? "")
-      .filter(Boolean),
-  );
+  const unique = new Set(values.map((value) => value?.trim() ?? "").filter(Boolean));
   return [
     { value: "", label: allLabel },
     ...Array.from(unique)
@@ -79,9 +52,7 @@ function uniqueGroupOptions(
 
 function stockItemOptionsFromRows(rows: StockSummaryItem[]): FormDropdownOption[] {
   const unique = new Set(
-    rows
-      .map((row) => row.stock_item?.trim() ?? "")
-      .filter(Boolean),
+    rows.map((row) => row.stock_item?.trim() ?? "").filter(Boolean),
   );
   return Array.from(unique)
     .sort((a, b) => a.localeCompare(b))
@@ -92,9 +63,11 @@ function StockSummaryColgroup() {
   return (
     <colgroup>
       <col />
-      <col style={{ width: "18%" }} />
+      <col style={{ width: "14%" }} />
       <col className="sales-report-col-qty" />
       <col className="sales-report-col-rate" />
+      <col className="sales-report-col-rate" />
+      <col className="sales-report-col-qty" />
       <col className="sales-report-col-rate" />
       {/* Trailing gutter so Value is not :last-child (scrollbar / last-col padding). */}
       <col className="sales-report-col-gutter" />
@@ -103,20 +76,24 @@ function StockSummaryColgroup() {
 }
 
 export function StockSummaryPage() {
-  const asOn = todayIso();
   const [belowReorderOnly, setBelowReorderOnly] = useState(false);
   const [stockGroup, setStockGroup] = useState("");
   const [stockItems, setStockItems] = useState<string[]>([]);
+  const [activityItem, setActivityItem] = useState<string | null>(null);
 
   const summaryQuery = useQuery({
-    queryKey: ["stock-summary", asOn],
-    queryFn: () => stockSummaryService.getSummary({ asOn }),
+    queryKey: ["stock-summary"],
+    queryFn: () => stockSummaryService.getSummary(),
   });
 
   const rows = summaryQuery.data?.items ?? [];
 
   const stockGroupOptions = useMemo(
-    () => uniqueGroupOptions(rows.map((row) => row.stock_group), "All groups"),
+    () =>
+      uniqueGroupOptions(
+        rows.map((row) => row.stock_group),
+        "All groups",
+      ),
     [rows],
   );
 
@@ -143,9 +120,7 @@ export function StockSummaryPage() {
 
   useEffect(() => {
     const allowed = new Set(stockItemOptions.map((option) => option.value));
-    setStockItems((current) =>
-      current.filter((item) => allowed.has(item)),
-    );
+    setStockItems((current) => current.filter((item) => allowed.has(item)));
   }, [stockItemOptions]);
 
   const filteredRows = useMemo(
@@ -157,10 +132,7 @@ export function StockSummaryPage() {
         if (stockGroup && (row.stock_group?.trim() ?? "") !== stockGroup) {
           return false;
         }
-        if (
-          stockItems.length > 0 &&
-          !stockItems.includes(row.stock_item.trim())
-        ) {
+        if (stockItems.length > 0 && !stockItems.includes(row.stock_item.trim())) {
           return false;
         }
         return true;
@@ -174,8 +146,7 @@ export function StockSummaryPage() {
     [filteredRows],
   );
   const totalClosingValue = useMemo(
-    () =>
-      filteredRows.reduce((sum, row) => sum + (row.closing_value ?? 0), 0),
+    () => filteredRows.reduce((sum, row) => sum + (row.closing_value ?? 0), 0),
     [filteredRows],
   );
 
@@ -190,11 +161,6 @@ export function StockSummaryPage() {
       />
 
       <div className="report-page__toolbar mt-1">
-        <FormField label="As on" className="report-page__custom-date">
-          <div className="default-win-form__control report-page__as-on-readonly">
-            {formatAsOnLabel(asOn)}
-          </div>
-        </FormField>
         <FormField label="Stock group">
           <FormDropdown
             className="report-page__period"
@@ -207,7 +173,7 @@ export function StockSummaryPage() {
             }}
             disabled={summaryQuery.isLoading}
             placeholder="All groups"
-            emptyMessage="No stock groups as on this date"
+            emptyMessage="No stock groups"
           />
         </FormField>
         <FormField label="Stock item" className="report-page__filter-search">
@@ -218,7 +184,7 @@ export function StockSummaryPage() {
               onChange={setStockItems}
               disabled={summaryQuery.isLoading}
               placeholder="All stock items"
-              emptyMessage="No stock items as on this date"
+              emptyMessage="No stock items"
               listClassName="report-page__filter-list"
             />
             {belowReorderCount > 0 ? (
@@ -227,15 +193,11 @@ export function StockSummaryPage() {
                 className={[
                   "stock-summary-reorder-badge",
                   "stock-summary-reorder-badge--filter",
-                  belowReorderOnly
-                    ? "is-filled"
-                    : "is-outline",
+                  belowReorderOnly ? "is-filled" : "is-outline",
                 ].join(" ")}
                 aria-pressed={belowReorderOnly}
                 title={
-                  belowReorderOnly
-                    ? "Clear reorder filter"
-                    : "Show reorder items only"
+                  belowReorderOnly ? "Clear reorder filter" : "Show reorder items only"
                 }
                 onClick={() => setBelowReorderOnly((current) => !current)}
               >
@@ -255,10 +217,7 @@ export function StockSummaryPage() {
             {summaryQuery.isLoading ? (
               <p className="app-table-empty">Loading stock summary…</p>
             ) : summaryQuery.isError ? (
-              <p
-                className="app-table-empty text-[var(--color-danger)]"
-                role="alert"
-              >
+              <p className="app-table-empty text-[var(--color-danger)]" role="alert">
                 {(summaryQuery.error as Error).message}
               </p>
             ) : (
@@ -270,6 +229,8 @@ export function StockSummaryPage() {
                     <th>Group</th>
                     <th className="app-table-num">Closing</th>
                     <th className="app-table-num">Cost price</th>
+                    <th className="app-table-num">Avg sell</th>
+                    <th className="app-table-num">Avg age</th>
                     <th className="app-table-num">Value</th>
                     <th aria-hidden="true" />
                   </tr>
@@ -277,10 +238,10 @@ export function StockSummaryPage() {
                 <tbody>
                   {rowCount === 0 ? (
                     <tr>
-                      <td colSpan={6} className="app-table-empty">
+                      <td colSpan={8} className="app-table-empty">
                         {belowReorderOnly
                           ? "No reorder items match the selected filters."
-                          : "No stock movements found as on this date."}
+                          : "No stock position data found."}
                       </td>
                     </tr>
                   ) : (
@@ -288,16 +249,18 @@ export function StockSummaryPage() {
                       <tr
                         key={row.stock_item}
                         className={
-                          row.below_reorder
-                            ? "app-table-row--reorder"
-                            : undefined
+                          row.below_reorder ? "app-table-row--reorder" : undefined
                         }
                       >
                         <td title={row.stock_item}>
                           <span className="stock-summary-item-cell">
-                            <span className="stock-summary-item-name">
+                            <button
+                              type="button"
+                              className="stock-summary-item-name stock-summary-item-name--link"
+                              onClick={() => setActivityItem(row.stock_item)}
+                            >
                               {row.stock_item}
-                            </span>
+                            </button>
                             {row.below_reorder ? (
                               <span
                                 className="stock-summary-reorder-badge is-filled"
@@ -314,9 +277,7 @@ export function StockSummaryPage() {
                         <td
                           className={[
                             "app-table-num",
-                            row.below_reorder
-                              ? "app-table-num--reorder"
-                              : "",
+                            row.below_reorder ? "app-table-num--reorder" : "",
                           ]
                             .filter(Boolean)
                             .join(" ")}
@@ -325,6 +286,19 @@ export function StockSummaryPage() {
                         </td>
                         <td className="app-table-num">
                           {formatRate(row.closing_rate)}
+                        </td>
+                        <td className="app-table-num">
+                          {formatRate(row.avg_selling_price)}
+                        </td>
+                        <td
+                          className="app-table-num"
+                          title={
+                            row.avg_weighted_age_days != null
+                              ? "Qty-weighted average age of FIFO remaining stock (days)"
+                              : undefined
+                          }
+                        >
+                          {formatNumber(row.avg_weighted_age_days)}
                         </td>
                         <td className="app-table-num">
                           {formatRate(row.closing_value)}
@@ -362,6 +336,8 @@ export function StockSummaryPage() {
                       : "—"}
                   </td>
                   <td />
+                  <td />
+                  <td />
                   <td className="app-table-num">
                     {!summaryQuery.isLoading && !summaryQuery.isError
                       ? formatRate(totalClosingValue)
@@ -374,6 +350,13 @@ export function StockSummaryPage() {
           </div>
         </div>
       </div>
+
+      {activityItem ? (
+        <StockItemActivityModal
+          stockItem={activityItem}
+          onClose={() => setActivityItem(null)}
+        />
+      ) : null}
     </section>
   );
 }

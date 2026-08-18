@@ -10,11 +10,7 @@ import {
 import { SettingsModal } from "@/components/settings/SettingsModal";
 
 export type SettingsTabId =
-  | "general"
-  | "companyProfile"
-  | "profile"
-  | "password"
-  | "users";
+  "general" | "companyProfile" | "profile" | "password" | "users";
 
 type SettingsContextValue = {
   isOpen: boolean;
@@ -22,9 +18,7 @@ type SettingsContextValue = {
   closeSettings: () => void;
 };
 
-const SettingsContext = createContext<SettingsContextValue | undefined>(
-  undefined,
-);
+const SettingsContext = createContext<SettingsContextValue | undefined>(undefined);
 
 type SettingsProviderProps = {
   children: ReactNode;

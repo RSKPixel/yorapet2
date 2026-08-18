@@ -79,8 +79,7 @@ export const FormAutocomplete = forwardRef<
   const selected =
     options.find((option) => String(option.value) === String(value)) ?? null;
 
-  const displayValue =
-    editing || open ? query : selected ? selected.label : "";
+  const displayValue = editing || open ? query : selected ? selected.label : "";
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -103,13 +102,9 @@ export const FormAutocomplete = forwardRef<
     const gap = 4;
     const spaceBelow = window.innerHeight - rect.bottom - gap;
     const spaceAbove = rect.top - gap;
-    const openUp =
-      spaceBelow < Math.min(maxHeight, 140) && spaceAbove > spaceBelow;
+    const openUp = spaceBelow < Math.min(maxHeight, 140) && spaceAbove > spaceBelow;
     const height = Math.min(maxHeight, openUp ? spaceAbove : spaceBelow);
-    const width = Math.min(
-      window.innerWidth - 16,
-      Math.max(rect.width, 28 * 16),
-    );
+    const width = Math.min(window.innerWidth - 16, Math.max(rect.width, 28 * 16));
 
     setMenuStyle({
       position: "fixed",
@@ -144,10 +139,7 @@ export const FormAutocomplete = forwardRef<
     }
     function onDocPointerDown(event: PointerEvent) {
       const target = event.target as Node;
-      if (
-        rootRef.current?.contains(target) ||
-        listRef.current?.contains(target)
-      ) {
+      if (rootRef.current?.contains(target) || listRef.current?.contains(target)) {
         return;
       }
       setOpen(false);
@@ -206,10 +198,7 @@ export const FormAutocomplete = forwardRef<
 
   function onBlur(event: FocusEvent<HTMLInputElement>) {
     const next = event.relatedTarget as Node | null;
-    if (
-      rootRef.current?.contains(next) ||
-      listRef.current?.contains(next)
-    ) {
+    if (rootRef.current?.contains(next) || listRef.current?.contains(next)) {
       return;
     }
     setOpen(false);
@@ -232,9 +221,7 @@ export const FormAutocomplete = forwardRef<
       if (!filtered.length) {
         return;
       }
-      setHighlight((index) =>
-        Math.min(index + 1, Math.max(filtered.length - 1, 0)),
-      );
+      setHighlight((index) => Math.min(index + 1, Math.max(filtered.length - 1, 0)));
       return;
     }
     if (event.key === "ArrowUp") {
@@ -267,10 +254,7 @@ export const FormAutocomplete = forwardRef<
           <ul
             id={listId}
             ref={listRef}
-            className={[
-              "default-win-form__autocomplete-list",
-              listClassName,
-            ]
+            className={["default-win-form__autocomplete-list", listClassName]
               .filter(Boolean)
               .join(" ")}
             role="listbox"

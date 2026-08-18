@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, Request, Response, status
 
 from app.core.exceptions import AuthenticationError
 from app.core.security import create_token
@@ -11,11 +11,13 @@ from app.dependencies.auth import (
     REFRESH_COOKIE_NAME,
     CurrentUserDep,
     RefreshUserDep,
+    uses_bearer_auth,
 )
 from app.dependencies.database import DbSessionDep, SettingsDep
 from app.repositories.user_repository import UserRepository
 from app.schemas.auth import (
     AuthResponse,
+    AuthTokenDelivery,
     ChangePasswordRequest,
     LoginRequest,
     UpdateProfileRequest,
@@ -26,13 +28,12 @@ from app.services.auth_service import AuthService
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
 
-def _set_auth_cookies(
-    response: Response,
+def _create_auth_tokens(
     *,
     user_id: int,
     auth_version: int,
     settings: SettingsDep,
-) -> None:
+) -> tuple[str, str]:
     access_token = create_token(
         user_id=user_id,
         auth_version=auth_version,
@@ -45,6 +46,16 @@ def _set_auth_cookies(
         token_type="refresh",
         settings=settings,
     )
+    return access_token, refresh_token
+
+
+def _set_auth_cookies(
+    response: Response,
+    *,
+    access_token: str,
+    refresh_token: str,
+    settings: SettingsDep,
+) -> None:
     response.set_cookie(
         ACCESS_COOKIE_NAME,
         access_token,
@@ -82,14 +93,41 @@ def _clear_auth_cookies(response: Response, settings: SettingsDep) -> None:
     )
 
 
-@router.post("/login", response_model=AuthResponse)
+def _auth_response(
+    *,
+    user: object,
+    access_token: str,
+    refresh_token: str,
+    delivery: AuthTokenDelivery,
+    response: Response,
+    settings: SettingsDep,
+) -> AuthResponse:
+    """Issue cookies and/or body tokens based on delivery mode."""
+    if delivery == "cookie":
+        _set_auth_cookies(
+            response,
+            access_token=access_token,
+            refresh_token=refresh_token,
+            settings=settings,
+        )
+        return AuthResponse(user=UserResponse.model_validate(user))
+
+    return AuthResponse(
+        user=UserResponse.model_validate(user),
+        access_token=access_token,
+        refresh_token=refresh_token,
+        token_type="bearer",
+    )
+
+
+@router.post("/login", response_model=AuthResponse, response_model_exclude_none=True)
 async def login(
     payload: LoginRequest,
     response: Response,
     session: DbSessionDep,
     settings: SettingsDep,
 ) -> AuthResponse:
-    """Authenticate credentials and issue HTTP-only JWT cookies."""
+    """Authenticate credentials and issue cookies or Bearer tokens."""
     user = await AuthService(UserRepository(session)).authenticate(
         payload.username,
         payload.password,
@@ -97,29 +135,43 @@ async def login(
     if user is None:
         raise AuthenticationError("Incorrect username or password")
 
-    _set_auth_cookies(
-        response,
+    access_token, refresh_token = _create_auth_tokens(
         user_id=user.id,
         auth_version=user.auth_version,
         settings=settings,
     )
-    return AuthResponse(user=UserResponse.model_validate(user))
+    return _auth_response(
+        user=user,
+        access_token=access_token,
+        refresh_token=refresh_token,
+        delivery=payload.delivery,
+        response=response,
+        settings=settings,
+    )
 
 
-@router.post("/refresh", response_model=AuthResponse)
+@router.post("/refresh", response_model=AuthResponse, response_model_exclude_none=True)
 async def refresh(
+    request: Request,
     response: Response,
     user: RefreshUserDep,
     settings: SettingsDep,
 ) -> AuthResponse:
-    """Rotate the access and refresh cookies."""
-    _set_auth_cookies(
-        response,
+    """Rotate access and refresh credentials (cookies or Bearer tokens)."""
+    access_token, refresh_token = _create_auth_tokens(
         user_id=user.id,
         auth_version=user.auth_version,
         settings=settings,
     )
-    return AuthResponse(user=UserResponse.model_validate(user))
+    delivery: AuthTokenDelivery = "bearer" if uses_bearer_auth(request) else "cookie"
+    return _auth_response(
+        user=user,
+        access_token=access_token,
+        refresh_token=refresh_token,
+        delivery=delivery,
+        response=response,
+        settings=settings,
+    )
 
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
@@ -136,13 +188,13 @@ async def logout(
     return response
 
 
-@router.get("/me", response_model=AuthResponse)
+@router.get("/me", response_model=AuthResponse, response_model_exclude_none=True)
 async def get_me(user: CurrentUserDep) -> AuthResponse:
     """Return the authenticated user."""
     return AuthResponse(user=UserResponse.model_validate(user))
 
 
-@router.patch("/me", response_model=AuthResponse)
+@router.patch("/me", response_model=AuthResponse, response_model_exclude_none=True)
 async def update_profile(
     payload: UpdateProfileRequest,
     user: CurrentUserDep,
@@ -158,24 +210,36 @@ async def update_profile(
     return AuthResponse(user=UserResponse.model_validate(updated_user))
 
 
-@router.post("/change-password", response_model=AuthResponse)
+@router.post(
+    "/change-password",
+    response_model=AuthResponse,
+    response_model_exclude_none=True,
+)
 async def change_password(
     payload: ChangePasswordRequest,
+    request: Request,
     response: Response,
     user: CurrentUserDep,
     session: DbSessionDep,
     settings: SettingsDep,
 ) -> AuthResponse:
-    """Change the current user's password and rotate session cookies."""
+    """Change the current user's password and rotate session credentials."""
     updated_user = await AuthService(UserRepository(session)).change_password(
         user,
         current_password=payload.current_password,
         new_password=payload.new_password,
     )
-    _set_auth_cookies(
-        response,
+    access_token, refresh_token = _create_auth_tokens(
         user_id=updated_user.id,
         auth_version=updated_user.auth_version,
         settings=settings,
     )
-    return AuthResponse(user=UserResponse.model_validate(updated_user))
+    delivery: AuthTokenDelivery = "bearer" if uses_bearer_auth(request) else "cookie"
+    return _auth_response(
+        user=updated_user,
+        access_token=access_token,
+        refresh_token=refresh_token,
+        delivery=delivery,
+        response=response,
+        settings=settings,
+    )

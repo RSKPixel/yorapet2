@@ -308,7 +308,9 @@
   font-size: 0.9375rem;
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-feature-settings:
+    "tnum" 1,
+    "lnum" 1;
 }
 
 .app-table {
@@ -390,7 +392,9 @@
   text-align: right;
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-feature-settings:
+    "tnum" 1,
+    "lnum" 1;
 }
 
 /* Full-height report pages — table body scrolls, footer stays pinned. */
@@ -529,6 +533,62 @@
   white-space: nowrap;
 }
 
+.stock-summary-item-name--link {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.stock-summary-item-name--link:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.app-modal--stock-activity {
+  max-width: min(90rem, calc(100vw - 1.5rem));
+  width: min(90rem, calc(100vw - 1.5rem));
+  max-height: min(92vh, 54rem);
+}
+
+.stock-activity-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  padding: 0.85rem 1rem 1rem;
+}
+
+.stock-activity-section {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.stock-activity-section__title {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.stock-activity-table-wrap {
+  min-height: 0;
+}
+
+.stock-activity-table-scroll {
+  max-height: min(28vh, 16rem);
+}
+
 .stock-summary-reorder-badge {
   display: inline-flex;
   align-items: center;
@@ -597,7 +657,142 @@
   font-weight: 600;
 }
 
-.report-page__filter-search .default-win-form__control.default-win-form__dropdown-trigger {
+.app-table-num--positive {
+  color: color-mix(in srgb, #15803d 88%, var(--color-ink));
+  font-weight: 600;
+}
+
+.app-table-num--negative {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.app-table--stock-pnl th:nth-last-child(2),
+.app-table--stock-pnl td:nth-last-child(2) {
+  padding-right: 0.55rem;
+}
+
+.app-table--stock-pnl th:last-child,
+.app-table--stock-pnl td:last-child {
+  width: 0.75rem;
+  min-width: 0.75rem;
+  padding: 0;
+}
+
+.stock-pnl-filter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.stock-pnl-filter-badge.is-filled {
+  border-width: 2px;
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.stock-pnl-filter-badge.is-outline {
+  opacity: 0.82;
+}
+
+.stock-pnl-filter-badge.is-outline:hover {
+  opacity: 1;
+}
+
+.stock-pnl-filter-badge__count {
+  display: inline-flex;
+  min-width: 1.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.05rem 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.stock-pnl-filter-badge--sales.is-outline {
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
+  color: color-mix(in srgb, var(--color-accent) 80%, var(--color-muted));
+  background: var(--color-surface);
+}
+
+.stock-pnl-filter-badge--sales.is-filled {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast, #fff);
+}
+
+.stock-pnl-filter-badge--sales .stock-pnl-filter-badge__count {
+  background: color-mix(in srgb, var(--color-accent) 14%, var(--color-surface));
+  color: var(--color-accent);
+}
+
+.stock-pnl-filter-badge--sales.is-filled .stock-pnl-filter-badge__count {
+  background: rgba(255, 255, 255, 0.24);
+  color: var(--color-accent-contrast, #fff);
+}
+
+.stock-pnl-filter-badge--profit.is-outline {
+  border-color: color-mix(in srgb, #15803d 45%, var(--color-border));
+  color: color-mix(in srgb, #15803d 80%, var(--color-muted));
+  background: var(--color-surface);
+}
+
+.stock-pnl-filter-badge--profit.is-filled {
+  border-color: #15803d;
+  background: #15803d;
+  color: #fff;
+}
+
+.stock-pnl-filter-badge--profit .stock-pnl-filter-badge__count {
+  background: rgba(21, 128, 61, 0.12);
+  color: #15803d;
+}
+
+.stock-pnl-filter-badge--profit.is-filled .stock-pnl-filter-badge__count {
+  background: rgba(255, 255, 255, 0.24);
+  color: #fff;
+}
+
+.stock-pnl-filter-badge--loss.is-outline {
+  border-color: color-mix(in srgb, var(--color-danger) 45%, var(--color-border));
+  color: color-mix(in srgb, var(--color-danger) 85%, var(--color-muted));
+  background: var(--color-surface);
+}
+
+.stock-pnl-filter-badge--loss.is-filled {
+  border-color: var(--color-danger);
+  background: var(--color-danger);
+  color: #fff;
+}
+
+.stock-pnl-filter-badge--loss .stock-pnl-filter-badge__count {
+  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+  color: var(--color-danger);
+}
+
+.stock-pnl-filter-badge--loss.is-filled .stock-pnl-filter-badge__count {
+  background: rgba(255, 255, 255, 0.24);
+  color: #fff;
+}
+
+.report-page__filter-search
+  .default-win-form__control.default-win-form__dropdown-trigger {
   display: flex;
   align-items: center;
   padding: 0 var(--form-control-pad-x);
@@ -862,11 +1057,7 @@
 }
 
 .form-toast--success {
-  border-color: color-mix(
-    in srgb,
-    var(--color-success) 40%,
-    var(--color-border)
-  );
+  border-color: color-mix(in srgb, var(--color-success) 40%, var(--color-border));
 }
 
 .form-toast--exiting {
@@ -1167,8 +1358,7 @@
 
 .settings-panel-body:hover,
 .settings-panel-body:focus-within {
-  scrollbar-color: color-mix(in srgb, var(--color-muted) 55%, transparent)
-    transparent;
+  scrollbar-color: color-mix(in srgb, var(--color-muted) 55%, transparent) transparent;
 }
 
 .settings-panel-body::-webkit-scrollbar {
@@ -1392,17 +1582,15 @@
   font-size: inherit;
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-feature-settings:
+    "tnum" 1,
+    "lnum" 1;
   line-height: 1.35;
   text-align: right;
 }
 
 .app-table td.costing-credit-cell .costing-credit-input:focus {
-  border-color: color-mix(
-    in srgb,
-    var(--color-accent) 55%,
-    var(--color-border)
-  );
+  border-color: color-mix(in srgb, var(--color-accent) 55%, var(--color-border));
   box-shadow: 0 0 0 2px var(--color-accent-soft);
   outline: none;
   background: var(--color-surface-raised);

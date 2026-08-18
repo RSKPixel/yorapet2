@@ -36,15 +36,11 @@ export function ExampleFormPage() {
   });
 
   const validationMessage =
-    errors.fullName?.message ??
-    errors.category?.message ??
-    errors.notes?.message;
+    errors.fullName?.message ?? errors.category?.message ?? errors.notes?.message;
 
   return (
     <section>
-      <PageHeader
-        items={[{ label: "Home", to: "/" }, { label: "Example Form" }]}
-      />
+      <PageHeader items={[{ label: "Home", to: "/" }, { label: "Example Form" }]} />
 
       <FormPanel
         title="Example form"
@@ -54,10 +50,7 @@ export function ExampleFormPage() {
         })}
         footerMessage={validationMessage}
         footer={
-          <button
-            type="submit"
-            className={defaultWinForm.buttonPrimary}
-          >
+          <button type="submit" className={defaultWinForm.buttonPrimary}>
             Submit placeholder
           </button>
         }

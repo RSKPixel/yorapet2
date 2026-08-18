@@ -60,9 +60,7 @@ export function decodeVoucherValue(value: string): {
   };
 }
 
-export function toVoucherOptions(
-  items: PurchaseVoucherOption[],
-): FormDropdownOption[] {
+export function toVoucherOptions(items: PurchaseVoucherOption[]): FormDropdownOption[] {
   return items.map((item) => {
     const dateLabel = formatVoucherDate(item.voucher_date);
     const vendorLabel = formatText(item.vendor);

@@ -41,13 +41,10 @@ export const authService = {
     currentPassword: string,
     newPassword: string,
   ): Promise<AuthUser> {
-    const { data } = await apiClient.post<AuthResponse>(
-      "/auth/change-password",
-      {
-        current_password: currentPassword,
-        new_password: newPassword,
-      },
-    );
+    const { data } = await apiClient.post<AuthResponse>("/auth/change-password", {
+      current_password: currentPassword,
+      new_password: newPassword,
+    });
     return mapUser(data);
   },
 

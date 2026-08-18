@@ -132,9 +132,7 @@ export function GeneralTab() {
                   Liveness
                 </h4>
                 {liveQuery.isLoading ? (
-                  <p className="text-[0.875rem] text-[var(--color-muted)]">
-                    Checking…
-                  </p>
+                  <p className="text-[0.875rem] text-[var(--color-muted)]">Checking…</p>
                 ) : liveQuery.isError ? (
                   <p className="text-[0.875rem] text-[var(--color-danger)]">
                     {(liveQuery.error as Error).message}
@@ -162,9 +160,7 @@ export function GeneralTab() {
                   Readiness
                 </h4>
                 {readyQuery.isLoading ? (
-                  <p className="text-[0.875rem] text-[var(--color-muted)]">
-                    Checking…
-                  </p>
+                  <p className="text-[0.875rem] text-[var(--color-muted)]">Checking…</p>
                 ) : readyQuery.isError ? (
                   <p className="text-[0.875rem] text-[var(--color-danger)]">
                     {(readyQuery.error as Error).message}

@@ -29,10 +29,7 @@ type SettingsModalProps = {
   initialTab?: SettingsTabId;
 };
 
-export function SettingsModal({
-  onClose,
-  initialTab = "general",
-}: SettingsModalProps) {
+export function SettingsModal({ onClose, initialTab = "general" }: SettingsModalProps) {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
 
@@ -57,8 +54,7 @@ export function SettingsModal({
     tabs.some((tab) => tab.id === initialTab) ? initialTab : "general",
   );
 
-  const resolvedTab =
-    activeTab === "users" && !isAdmin ? "general" : activeTab;
+  const resolvedTab = activeTab === "users" && !isAdmin ? "general" : activeTab;
 
   return (
     <Modal
@@ -69,11 +65,7 @@ export function SettingsModal({
       className="settings-shell-card"
     >
       <div className="settings-layout">
-        <div
-          className="settings-tabs"
-          role="tablist"
-          aria-label="Settings sections"
-        >
+        <div className="settings-tabs" role="tablist" aria-label="Settings sections">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const active = resolvedTab === tab.id;

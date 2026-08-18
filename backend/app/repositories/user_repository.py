@@ -42,9 +42,13 @@ class UserRepository:
         *,
         excluding_user_id: int | None = None,
     ) -> int:
-        statement = select(func.count()).select_from(User).where(
-            User.role == "admin",
-            User.is_active.is_(True),
+        statement = (
+            select(func.count())
+            .select_from(User)
+            .where(
+                User.role == "admin",
+                User.is_active.is_(True),
+            )
         )
         if excluding_user_id is not None:
             statement = statement.where(User.id != excluding_user_id)

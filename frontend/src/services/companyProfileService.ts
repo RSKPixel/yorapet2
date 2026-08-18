@@ -1,8 +1,5 @@
 import { apiClient } from "@/services/apiClient";
-import type {
-  CompanyProfileResponse,
-  UpdateCompanyProfileRequest,
-} from "@/types/api";
+import type { CompanyProfileResponse, UpdateCompanyProfileRequest } from "@/types/api";
 
 export type CompanyProfile = {
   id: number;
@@ -40,9 +37,7 @@ export const companyProfileService = {
     return mapCompanyProfile(data);
   },
 
-  async updateProfile(
-    payload: UpdateCompanyProfileRequest,
-  ): Promise<CompanyProfile> {
+  async updateProfile(payload: UpdateCompanyProfileRequest): Promise<CompanyProfile> {
     const { data } = await apiClient.patch<CompanyProfileResponse>(
       "/company-profile",
       payload,
