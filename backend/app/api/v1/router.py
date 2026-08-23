@@ -7,6 +7,7 @@ from fastapi import APIRouter
 from app.api.v1.endpoints import (
     auth,
     company_profile,
+    cost_centres,
     health,
     inventory_master,
     purchase_costing,
@@ -27,4 +28,5 @@ api_router.include_router(purchases.router)
 api_router.include_router(purchase_costing.router)
 api_router.include_router(stock_summary.router)
 api_router.include_router(inventory_master.router)
+api_router.include_router(cost_centres.router)
 api_router.include_router(users.router)

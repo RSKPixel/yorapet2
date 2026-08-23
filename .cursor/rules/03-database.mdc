@@ -41,6 +41,7 @@ Known tables used by the app (read-only):
 - `tallydata_inventorymaster` — stock item master (group, packing, units)
 - `tallydata_stockposition` — closing stock qty / rate / value for Stock Summary (display `closing_value * -1`)
 - `tallydata_purchases` / `tallydata_sales` — source for synced `yorapet_*` lines
+- `tallydata_costcentre` — cost centres (e.g. blow machines where `parent = 'Blow Mould Machine'`)
 
 Rules
 

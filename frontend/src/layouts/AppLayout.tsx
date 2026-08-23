@@ -162,7 +162,7 @@ const navSections: NavSection[] = [
       },
       {
         to: "/stock-movements/blowing",
-        label: "Blowing",
+        label: "Production (Blowing)",
         icon: <ArrowsRightLeftIcon className={iconClass} aria-hidden="true" />,
       },
       {

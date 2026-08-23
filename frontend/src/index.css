@@ -589,6 +589,69 @@
   max-height: min(28vh, 16rem);
 }
 
+.production-blowing-table-wrap {
+  flex: 0 1 auto;
+}
+
+.production-blowing-table-scroll {
+  flex: 0 1 auto;
+  max-height: min(32vh, 18rem);
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.production-blowing-table {
+  table-layout: fixed;
+}
+
+.production-blowing-table th:last-child,
+.production-blowing-table td:last-child {
+  width: 2.75rem;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  overflow: hidden;
+  text-align: center;
+}
+
+.production-blowing-table .app-table-num {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.production-blowing-table .app-table-num input {
+  text-align: right;
+}
+
+.production-blowing-num-input {
+  text-align: right;
+}
+
+.production-blowing-icon-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 0.35rem;
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.production-blowing-icon-btn:hover {
+  background: var(--color-surface-hover);
+}
+
+.production-blowing-icon-btn svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
 .stock-summary-reorder-badge {
   display: inline-flex;
   align-items: center;

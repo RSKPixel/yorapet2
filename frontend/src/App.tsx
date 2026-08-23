@@ -13,6 +13,7 @@ import { SalesReportPage } from "@/pages/reports/SalesReportPage";
 import { StockSummaryPage } from "@/pages/reports/StockSummaryPage";
 import { StockWisePnlPage } from "@/pages/reports/StockWisePnlPage";
 import { SectionPage } from "@/pages/SectionPage";
+import { ProductionBlowingPage } from "@/pages/stock-movements/ProductionBlowingPage";
 import { CostingPage } from "@/pages/transactions/CostingPage";
 import { CreditNotePage } from "@/pages/transactions/CreditNotePage";
 
@@ -32,7 +33,7 @@ export function AppRouter() {
             />
             <Route
               path="stock-movements/blowing"
-              element={<SectionPage section="Stock Movements" page="Blowing" />}
+              element={<ProductionBlowingPage />}
             />
             <Route
               path="stock-movements/packing-materials"
