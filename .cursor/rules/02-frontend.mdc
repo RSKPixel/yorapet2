@@ -72,11 +72,23 @@ Avoid unnecessary global state.
 
 Display field-level validation errors on the field helpers.
 
+### Transaction / content form pages (canonical)
+
+Use this layout for stock-movement and other full-page forms (see Production Blowing):
+
+1. **`PrimaryContentLayout`** — breadcrumb + scrollable body + content footer (messages left, primary actions right). Do not put Save in a `FormPanel` footer.
+2. **App shell** — fill-main routes (no main padding) so the content footer aligns with the sidebar bottom bar.
+3. **`FormPanel`** — wrap the top field group (e.g. job date / finish date / job no / status / machine) in `FormPanel` with `wide` + `hideHeader` for raised contrast. Labour / electricity costs are edited via the Taken table **Expenses** value modal, not the top panel. Do not wrap Taken/Received line tables in `FormPanel`; leave those as plain sections. Prefer headerless panels; do not add section titles like “Job details” unless the user asks.
+4. **Inputs** — use form control tokens (white / raised field surfaces + borders) so controls do not blend into the cream page.
+5. **Nested forms** — `PrimaryContentLayout` owns the `<form>`; nested `FormPanel`s must not pass `onSubmit` (render as div shells only).
+
+Reference: `frontend/src/components/layout/PrimaryContentLayout.tsx`, `frontend/src/pages/stock-movements/ProductionBlowingPage.tsx`.
+
 ### Form messages (content footer)
 
 All submit / API success and error messages must use `useFormMessage()` (`showSuccess`, `showError`, `showInfo`, `showErrors`). Do not render ad-hoc success/error banners inside forms or pages.
 
-- Inside the authenticated shell, messages appear in the content section footer (`FormMessageInline` in `AppLayout`).
+- Inside the authenticated shell, messages appear in the content section footer (`FormMessageInline` in `PrimaryContentLayout` / content footer).
 - Outside the shell (e.g. login), the same API shows floating toasts.
 - Keep field validation errors on the input; put operational messages in the footer.
 - Prefer `useFormMessage` from `@/hooks/useFormMessage` or `@/components/forms`.
@@ -85,7 +97,7 @@ All submit / API success and error messages must use `useFormMessage()` (`showSu
 
 Browser autofill must always stay disabled on every form. Never enable it unless explicitly requested.
 
-- Every form must set `autoComplete="off"` (the `FormPanel` wrapper does this).
+- Every form must set `autoComplete="off"` (the `FormPanel` wrapper / `PrimaryContentLayout` form does this).
 - Field helpers (`FormInput`, `FormSelect`, `FormTextarea`, `FormAutocomplete`) default to `autoComplete="new-password"` because Chrome ignores `"off"` on address/email/password fields. They also set `data-1p-ignore` and `data-lpignore` to suppress password managers.
 - Any raw `input`, `select`, or `textarea` must apply the same attributes (`autoComplete="new-password"`, `data-1p-ignore`, `data-lpignore`).
 - Spread `{...props}` before these attributes so callers cannot re-enable autofill by accident.
@@ -135,7 +147,7 @@ Rules:
 - Header and footer share `--form-bar-min-height` and `--form-bar-pad-y`; footer padding is outside the button, not inside it
 - `--form-control-height` is derived from input font/line-height/padding; bars grow with it automatically
 - Never shrink footer buttons to fit bar height; keep compact button padding tokens instead
-- Every `default-win-form` header should include an appropriate semantic icon via `FormPanel`'s `titleIcon` prop
+- When a `FormPanel` shows a header, include an appropriate semantic icon via `titleIcon`. Prefer `hideHeader` on transaction content form pages (see Forms section above)
 - Reuse the shared header icon size from `.default-win-form__title-icon`; keep it consistent at `1.15rem` instead of one-off per-form sizing
 - **Icons: Heroicons only** (`@heroicons/react/24/outline`). Import from `frontend/src/components/forms/formIcons.tsx`; never add custom inline SVG icons for forms, settings, or modals
 
@@ -184,7 +196,7 @@ Rules:
 - Every table must include an `app-table-foot` (count, totals, or status). Do not omit it.
 - Use `app-table` on the `<table>` (sticky muted headers, compact cells, hairline row dividers).
 - In-row selects use `app-table-select` — not ad-hoc bordered selects.
-- Numeric / ID columns use `app-table-num` (right-aligned, tabular nums via mono).
+- Numeric / ID columns use `app-table-num` (right-aligned, tabular nums via mono). Inputs inside `.app-table-num` are always right-aligned.
 - Empty / loading / error states inside the scroll area use `app-table-empty` (or a single empty `<td colSpan={…} className="app-table-empty">`).
 - Prefer extending `app-table*` in `index.css` over page-local table CSS when a new shared variant is needed.
 

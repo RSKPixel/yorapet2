@@ -22,6 +22,7 @@
 }
 
 .default-win-form-host--fill {
+  flex: 1 1 auto;
   height: 100%;
   max-height: 100%;
   min-height: 0;
@@ -41,7 +42,9 @@
 .default-win-form__autocomplete-list,
 .default-win-form__multi-select,
 .default-win-form__multi-select-menu,
-.report-page__toolbar {
+.report-page__toolbar,
+.primary-content,
+.app-modal {
   --form-bg: var(--color-surface-raised);
   --form-header: var(--color-surface);
   --form-footer: var(--color-surface);
@@ -53,7 +56,7 @@
   --form-accent-soft: var(--color-accent-soft);
   --form-hover: var(--color-surface-hover);
   --form-on-accent: var(--color-accent-contrast);
-  --form-input-bg: var(--color-surface);
+  --form-input-bg: #ffffff;
   --form-input-ink: var(--color-ink);
   --form-input-line: var(--color-border);
   --form-control-font-size: 0.9375rem;
@@ -87,6 +90,19 @@
 
 [data-theme="light"] .default-win-form {
   box-shadow: 0 1px 0 color-mix(in srgb, white 55%, transparent) inset;
+}
+
+[data-theme="dark"] .default-win-form,
+[data-theme="dark"] .default-win-form__dropdown,
+[data-theme="dark"] .default-win-form__dropdown-list,
+[data-theme="dark"] .default-win-form__autocomplete,
+[data-theme="dark"] .default-win-form__autocomplete-list,
+[data-theme="dark"] .default-win-form__multi-select,
+[data-theme="dark"] .default-win-form__multi-select-menu,
+[data-theme="dark"] .report-page__toolbar,
+[data-theme="dark"] .primary-content,
+[data-theme="dark"] .app-modal {
+  --form-input-bg: var(--color-surface);
 }
 
 .default-win-form--fill {
@@ -167,6 +183,14 @@
 
 .default-win-form--wide .default-win-form__control {
   border-radius: 0.4rem;
+}
+
+/* Keep controls legible on cream page shells (outside nested FormPanel vars). */
+.primary-content .default-win-form__control,
+.default-win-form .default-win-form__control {
+  background-color: var(--form-input-bg, #ffffff);
+  border: 1px solid var(--form-input-line, var(--color-border));
+  color: var(--form-input-ink, var(--color-ink));
 }
 
 .default-win-form__header {
@@ -332,8 +356,8 @@
   height: var(--form-control-height);
   border: var(--form-control-border) solid var(--form-input-line);
   border-radius: 0.45rem;
-  background: var(--form-input-bg);
-  color: var(--form-input-ink);
+  background-color: var(--form-input-bg, #ffffff);
+  color: var(--form-input-ink, var(--color-ink));
   padding: var(--form-control-pad-y) var(--form-control-pad-x);
   font: inherit;
   font-size: var(--form-control-font-size);

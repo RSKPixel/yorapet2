@@ -397,6 +397,10 @@
     "lnum" 1;
 }
 
+.app-table-num input {
+  text-align: right;
+}
+
 /* Full-height report pages — table body scrolls, footer stays pinned. */
 .report-page {
   display: flex;
@@ -590,18 +594,43 @@
 }
 
 .production-blowing-table-wrap {
-  flex: 0 1 auto;
+  flex: 0 0 auto;
+  /* Keep overflow hidden so border-radius clips thead corners. */
+  overflow: hidden;
+}
+
+.production-blowing-table-wrap .app-table-shell {
+  flex: 0 0 auto;
+  overflow: visible;
 }
 
 .production-blowing-table-scroll {
-  flex: 0 1 auto;
-  max-height: min(32vh, 18rem);
+  flex: 0 0 auto;
+  max-height: none;
   overflow-x: auto;
-  overflow-y: auto;
+  overflow-y: visible;
+  scrollbar-gutter: auto;
 }
 
 .production-blowing-table {
   table-layout: fixed;
+}
+
+.production-blowing-table thead th:first-child {
+  border-top-left-radius: calc(0.5rem - 1px);
+}
+
+.production-blowing-table thead th:last-child {
+  border-top-right-radius: calc(0.5rem - 1px);
+}
+
+.production-blowing-table thead th {
+  position: static;
+  box-shadow: none;
+}
+
+.production-blowing-table tfoot td {
+  border-top: 1px solid var(--color-border);
 }
 
 .production-blowing-table th:last-child,
@@ -618,12 +647,31 @@
   text-overflow: ellipsis;
 }
 
-.production-blowing-table .app-table-num input {
+.production-blowing-num-input {
   text-align: right;
 }
 
-.production-blowing-num-input {
+.production-blowing-expenses-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  margin: 0;
+  padding: 0.15rem 0.35rem;
+  border: 1px solid transparent;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
   text-align: right;
+  cursor: pointer;
+}
+
+.production-blowing-expenses-btn:hover {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-accent);
 }
 
 .production-blowing-icon-btn {
@@ -650,6 +698,13 @@
   width: 1rem;
   height: 1rem;
   flex-shrink: 0;
+}
+
+.production-blowing-col-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
 }
 
 .stock-summary-reorder-badge {
@@ -1017,7 +1072,7 @@
   text-overflow: clip;
 }
 
-/* Content section footer — form messages. */
+/* Content section footer — form messages + page actions. */
 .content-footer {
   box-sizing: border-box;
   flex-shrink: 0;
@@ -1035,6 +1090,53 @@
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0 1.5rem;
+}
+
+.content-footer__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.content-footer__actions button,
+.content-footer__actions .default-win-form__button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  min-width: 4.5rem;
+  margin: 0;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.45rem;
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.content-footer__actions button.default-win-form__button--primary,
+.content-footer__actions .default-win-form__button--primary {
+  border-color: transparent;
+  background-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+.content-footer__actions button.default-win-form__button--primary:hover:not(:disabled),
+.content-footer__actions .default-win-form__button--primary:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--color-accent) 88%, black);
+}
+
+.content-footer__actions button:disabled,
+.content-footer__actions .default-win-form__button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .content-footer__message {
@@ -1089,6 +1191,42 @@
 .content-footer__message-dismiss:hover {
   opacity: 1;
   background: var(--color-surface-hover);
+}
+
+/* Full-height primary content pages (Yoradm-style, no FormPanel chrome). */
+.primary-content {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.primary-content__heading {
+  flex-shrink: 0;
+  padding: 1.25rem 1.5rem 0;
+}
+
+.primary-content__heading > header {
+  margin-bottom: 0.75rem;
+}
+
+.primary-content__form {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.primary-content__body {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0.5rem 1.5rem 1rem;
 }
 
 /* Floating toasts when no content footer host (e.g. login). */
@@ -1229,6 +1367,66 @@
 .app-modal-close:hover {
   background: var(--color-surface-hover);
   color: var(--color-ink);
+}
+
+.app-modal--production-expenses {
+  max-width: 26rem;
+  max-height: none;
+}
+
+.app-modal--production-qty {
+  max-width: 32rem;
+  max-height: none;
+}
+
+.production-expenses-modal-body {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.production-qty-modal-body {
+  padding: 1rem;
+}
+
+.production-qty-modal-table-wrap {
+  margin: 0;
+  overflow: visible;
+}
+
+.production-qty-modal-table-wrap .app-table-shell {
+  overflow: visible;
+}
+
+.production-qty-modal-table {
+  min-width: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.production-qty-modal-table th,
+.production-qty-modal-table td {
+  overflow: visible;
+  white-space: normal;
+}
+
+.production-qty-modal-table th:last-child,
+.production-qty-modal-table td:last-child {
+  width: 2.75rem;
+  text-align: center;
+}
+
+.production-qty-modal-table .app-table-num {
+  overflow: visible;
+}
+
+.production-expenses-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
 }
 
 .app-modal-overlay--pdf {

@@ -239,13 +239,6 @@ export function StockWisePnlPage() {
     [filteredRows],
   );
 
-  const periodHint =
-    period === "all"
-      ? "all sales"
-      : periodRange
-        ? `${periodRange.dateFrom} to ${periodRange.dateTo}`
-        : "selected period";
-
   const closePdfPreview = useCallback(() => {
     setPdfPreview((current) => {
       if (current?.url) {
@@ -369,12 +362,7 @@ export function StockWisePnlPage() {
         ]}
       />
 
-      <p className="report-page__hint mt-1 text-sm text-[var(--color-muted)]">
-        Shows stock items with sales only. P&L uses closing cost price, average sell
-        price, and sell qty for {periodHint}.
-      </p>
-
-      <div className="report-page__toolbar mt-2">
+      <div className="report-page__toolbar mt-1">
         <FormField label="Sales period">
           <FormDropdown
             className="report-page__period"

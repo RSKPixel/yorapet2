@@ -282,6 +282,7 @@ export function AppLayout() {
   });
   const companyName = companyProfileQuery.data?.companyName.trim() ?? "";
   const location = useLocation();
+  const isFillMain = location.pathname.startsWith("/stock-movements/blowing");
   const activeSection =
     navSections.find((section) =>
       section.items.some((item) =>
@@ -502,7 +503,14 @@ export function AppLayout() {
         </aside>
 
         <main className="flex min-h-0 min-w-0 flex-1 flex-col">
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-6 py-8">
+          <div
+            className={[
+              "flex min-h-0 flex-1 flex-col overflow-hidden",
+              isFillMain ? "" : "px-6 py-8",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
             <Outlet />
           </div>
         </main>

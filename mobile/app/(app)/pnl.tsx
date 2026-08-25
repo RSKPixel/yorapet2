@@ -187,19 +187,8 @@ export default function PnlScreen() {
     [filteredRows],
   );
 
-  const periodHint =
-    period === "all"
-      ? "all sales"
-      : periodRange
-        ? `${periodRange.dateFrom} to ${periodRange.dateTo}`
-        : "selected period";
-
   return (
     <View style={styles.screen}>
-      <Text style={styles.hint}>
-        Items with sales only. Cost, avg sell, and sell qty for {periodHint}.
-      </Text>
-
       <View style={styles.toolbar}>
         <ScrollView
           horizontal
@@ -469,13 +458,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.surface,
-  },
-  hint: {
-    ...typography.muted,
-    color: colors.muted,
-    paddingHorizontal: 12,
-    paddingTop: 10,
-    paddingBottom: 4,
   },
   toolbar: {
     gap: 10,
