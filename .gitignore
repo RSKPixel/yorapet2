@@ -27,6 +27,7 @@ dist-ssr/
 **/.env.local
 **/.env.*.local
 mobile/.env
+docker/.env
 
 # Uploads / runtime
 backend/uploads/

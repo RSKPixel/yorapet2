@@ -16,7 +16,7 @@ yorapet2/
 ├── backend/          FastAPI API (/api/v1)
 ├── frontend/         React SPA (port 5173)
 ├── mobile/           Expo app (login + reports)
-├── compose.yaml      Local MySQL 8 for development
+├── docker/           Production Compose stack (MySQL external)
 ├── Makefile          install, dev, lint, test, build, migrate, check
 └── .cursor/rules/    Project conventions
 ```
@@ -27,27 +27,24 @@ yorapet2/
 - [uv](https://docs.astral.sh/uv/) (`pip install uv` or official installer)
 - Node.js 20+
 - [pnpm](https://pnpm.io/) 10+
-- Docker (optional, for local MySQL via Compose)
+- Docker (optional, for the `docker/` app stack — MySQL is managed separately)
 
 ## First-time setup
 
 ```bash
-# 1. Local MySQL (optional — skip if you already have a remote DB)
-make db-up
-
-# 2. Install dependencies
+# 1. Install dependencies
 make install
 
-# 3. Configure secrets locally (never commit real credentials)
+# 2. Configure secrets locally (never commit real credentials)
 cp backend/.env backend/.env.local
 # Edit backend/.env.local with MYSQL_* and JWT_SECRET_KEY
 
 cp frontend/.env frontend/.env.local   # optional overrides
 
-# 4. Run migrations
+# 3. Run migrations
 make migrate
 
-# 5. Start dev servers (separate terminals)
+# 4. Start dev servers (separate terminals)
 make dev-backend    # http://127.0.0.1:8000
 make dev-frontend   # http://localhost:5173
 make dev-mobile     # Expo (optional)
@@ -70,7 +67,6 @@ Default admin (from env placeholders): username `admin` — change `ADMIN_PASSWO
 | `make build` | Production frontend build |
 | `make migrate` | Alembic upgrade head |
 | `make check` | lint + typecheck + test + build |
-| `make db-up` / `make db-down` | Docker Compose MySQL |
 
 ## Environment files
 
@@ -115,7 +111,7 @@ Browser → React SPA → FastAPI /api/v1 → Services → Repositories → MySQ
 
 ## Quality gates
 
-`make test` runs unit tests only. Integration tests (`make test-backend-integration`) require a reachable MySQL database (e.g. `make db-up` with Docker, or a remote DB in `backend/.env.local`).
+`make test` runs unit tests only. Integration tests (`make test-backend-integration`) require a reachable MySQL database (configure `MYSQL_*` in `backend/.env` / `.env.local`).
 
 Run before review:
 

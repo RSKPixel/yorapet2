@@ -1,0 +1,32 @@
+# Git / IDE
+.git
+.cursor
+.gitignore
+**/.DS_Store
+
+# Env and secrets (never bake into images)
+**/.env
+**/.env.*
+!**/.env.example
+
+# Python
+**/__pycache__
+**/*.py[cod]
+**/.venv
+**/venv
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/.coverage
+**/htmlcov
+backend/uploads
+
+# Node
+**/node_modules
+**/dist
+**/dist-ssr
+**/.pnpm-store
+
+# Not needed in image
+mobile/
+**/*.md
