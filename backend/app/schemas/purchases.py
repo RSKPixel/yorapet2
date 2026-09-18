@@ -31,6 +31,7 @@ class PurchaseLineResponse(BaseModel):
     box: Decimal | None = None
     qty_per_box: Decimal | None = None
     value_addition: Decimal | None = None
+    credit_note: Decimal | None = None
     cost_value: Decimal | None = None
     cost_price: Decimal | None = None
     synced_at: datetime
@@ -54,6 +55,7 @@ class PurchaseLineResponse(BaseModel):
         "box",
         "qty_per_box",
         "value_addition",
+        "credit_note",
         "cost_value",
         "cost_price",
     )

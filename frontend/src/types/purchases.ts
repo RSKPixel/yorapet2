@@ -14,6 +14,12 @@ export type PurchaseLineResponse = {
   weight: number | null;
   rate: number | null;
   amount: number | null;
+  box?: number | null;
+  qty_per_box?: number | null;
+  value_addition?: number | null;
+  credit_note?: number | null;
+  cost_value?: number | null;
+  cost_price?: number | null;
   synced_at: string;
 };
 

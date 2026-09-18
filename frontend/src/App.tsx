@@ -8,6 +8,7 @@ import { NotFoundPage } from "@/pages/NotFoundPage";
 import { OpenSettingsRoute } from "@/pages/OpenSettingsRoute";
 import { TallyDataPage } from "@/pages/data/TallyDataPage";
 import { InventoryMasterPage } from "@/pages/master/InventoryMasterPage";
+import { CreditNoteWorkingsPage } from "@/pages/reports/CreditNoteWorkingsPage";
 import { PurchasesReportPage } from "@/pages/reports/PurchasesReportPage";
 import { SalesReportPage } from "@/pages/reports/SalesReportPage";
 import { StockSummaryPage } from "@/pages/reports/StockSummaryPage";
@@ -45,6 +46,10 @@ export function AppRouter() {
             <Route path="reports/stock-pnl" element={<StockWisePnlPage />} />
             <Route path="reports/sales" element={<SalesReportPage />} />
             <Route path="reports/purchases" element={<PurchasesReportPage />} />
+            <Route
+              path="reports/credit-note-workings"
+              element={<CreditNoteWorkingsPage />}
+            />
             <Route path="transactions/costing" element={<CostingPage />} />
             <Route path="transactions/credit-note" element={<CreditNotePage />} />
             <Route path="status" element={<OpenSettingsRoute tab="general" />} />

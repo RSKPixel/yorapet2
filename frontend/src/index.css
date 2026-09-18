@@ -355,6 +355,30 @@
   background: var(--color-surface-hover);
 }
 
+.app-table tbody tr.app-table-group td {
+  background: var(--color-surface-hover);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.app-table tbody tr.app-table-group:hover td {
+  background: var(--color-surface-hover);
+}
+
+.app-table tbody tr.app-table-subtotal td {
+  background: color-mix(in srgb, var(--color-surface-hover) 70%, transparent);
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.app-table tbody tr.app-table-subtotal:hover td {
+  background: color-mix(in srgb, var(--color-surface-hover) 70%, transparent);
+}
+
+.app-table tbody tr.app-table-subtotal td.app-table-num {
+  color: var(--color-ink);
+}
+
 .app-table-empty {
   padding: 1rem 0.55rem !important;
   text-align: center;
@@ -1070,6 +1094,44 @@
 .app-table--sales-report td.app-table-num {
   overflow: visible;
   text-overflow: clip;
+}
+
+.app-table--credit-note-workings {
+  min-width: 52rem;
+}
+
+.app-table-foot--aligned .app-table--credit-note-workings {
+  min-width: 52rem;
+}
+
+.app-table--credit-note-workings .cn-workings-col-box,
+.app-table--credit-note-workings .cn-workings-col-qty {
+  width: 5.5rem;
+}
+
+.app-table--credit-note-workings .cn-workings-col-purchase {
+  width: 8.75rem;
+}
+
+.app-table--credit-note-workings .cn-workings-col-pct {
+  width: 8.5rem;
+}
+
+.app-table--credit-note-workings .cn-workings-col-credit {
+  width: 9.25rem;
+}
+
+.app-table--credit-note-workings thead th {
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: clip;
+  line-height: 1.25;
+  vertical-align: bottom;
+}
+
+.app-table--credit-note-workings thead th.app-table-num {
+  overflow: hidden;
+  text-align: right;
 }
 
 /* Content section footer — form messages + page actions. */
